@@ -35,7 +35,10 @@ const getProductList = (keyword: string): AppThunk => {
         page: curPage || 1,
         keyword: keyword || "",
         sort_by: getSortAndOrderVal("sort", selectedSort),
-        order_by: getSortAndOrderVal("order", selectedSort),
+        order_by:
+          selectedSort === "all"
+            ? ""
+            : getSortAndOrderVal("order", selectedSort),
         brands: selectedBrand || "",
         categories: selectedCategory || "",
         price: selectedPrice || "",

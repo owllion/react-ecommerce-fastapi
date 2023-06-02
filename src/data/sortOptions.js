@@ -10,7 +10,7 @@ import { IoMdInfinite } from "react-icons/io";
 export const sortOptions = [
   {
     name: "All",
-    val: "",
+    val: "all",
     icon: <IoMdInfinite />,
   },
   {

@@ -155,6 +155,7 @@ const ProductList = () => {
               />
             </>
           )}
+          {isLoading && <Lottie jsonName={"productListLoading"} />}
 
           {!isLoading && filteredList?.length === 0 && (
             <Lottie jsonName={"productNotFound"} />
