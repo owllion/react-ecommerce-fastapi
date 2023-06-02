@@ -133,7 +133,9 @@ const ProductList = () => {
               />
             </Func>
           </Top>
-
+          {isLoading && filteredList?.length === 0 && (
+            <Lottie jsonName={"productListLoading"} />
+          )}
           {filteredList!?.length > 0 && (
             <>
               <ItemContainer as={motion.div} layout>
@@ -155,7 +157,6 @@ const ProductList = () => {
               />
             </>
           )}
-          {isLoading && <Lottie jsonName={"productListLoading"} />}
 
           {!isLoading && filteredList?.length === 0 && (
             <Lottie jsonName={"productNotFound"} />
