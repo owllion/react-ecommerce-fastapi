@@ -39,6 +39,6 @@ export interface IGetProducts {
   price: string;
   brands: Array<String> | string;
   categories: Array<String> | string;
-  sortBy: string;
-  orderBy: string;
+  sort_by: string;
+  order_by: string;
 }

@@ -30,30 +30,12 @@ const getProductList = (keyword: string): AppThunk => {
           ? val.substring(0, val.indexOf("-"))
           : val.substring(val.indexOf("-") + 1);
       };
-      // let config: AxiosRequestConfig = {
-      //   params: {
-      //     page: curPage || 1,
-      //     keyword: keyword || "",
-      //     sortBy: getSortAndOrderVal("sort", selectedSort),
-      //     orderBy:
-      //       selectedSort === "all"
-      //         ? ""
-      //         : getSortAndOrderVal("order", selectedSort),
-      //     brands: selectedBrand || "",
-      //     categories: selectedCategory || "",
-      //     price: selectedPrice || "",
-      //   },
-      //   paramsSerializer: (params) =>
-      //     qs.stringify(params, { arrayFormat: "repeat" }),
-      // };
+
       let config: IGetProducts = {
         page: curPage || 1,
         keyword: keyword || "",
-        sortBy: getSortAndOrderVal("sort", selectedSort),
-        orderBy:
-          selectedSort === "all"
-            ? ""
-            : getSortAndOrderVal("order", selectedSort),
+        sort_by: getSortAndOrderVal("sort", selectedSort),
+        order_by: getSortAndOrderVal("order", selectedSort),
         brands: selectedBrand || "",
         categories: selectedCategory || "",
         price: selectedPrice || "",
