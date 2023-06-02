@@ -5,24 +5,35 @@ import styled, { css } from "styled-components";
 import cl from "../constants/color/color";
 import DesktopCartItem from "../components/Checkout/Cart/DesktopCartItem";
 import TabletCartItem from "../components/Checkout/Cart/TabletCartItem";
-import { getNormalList } from "../api/user.api";
+import { getCartListApi } from "../api/user.api";
 import { IProduct } from "../interface/product.interface";
 import { cartActions } from "../store/slice/Cart.slice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { commonActions } from "../store/slice/Common.slice";
 import Lottie from "../components/Common/Lottie";
 
-interface IResult {
-  data: { cartList: IProduct[] };
-}
+type ICartItem = {
+  product: {
+    price: number;
+    product_name: string;
+    thumbnail: string;
+  };
+  product_id: string;
+  qty: number;
+  size: string;
+};
 
+type ICartItems = {
+  cart_id: string;
+  cart_items: ICartItem[];
+};
 const Cart = () => {
   const [total, setTotal] = useState(0);
   const dispatch = useAppDispatch();
-  const { cartList } = useAppSelector((state) => state.cart || {});
+  const { cartList } = useAppSelector((state) => state.cart);
   const getTotal = () => {
-    const res = cartList.reduce(
-      (total, cur) => total + cur.qty! * cur.price,
+    const res = cartList?.reduce(
+      (total: any, cur: any) => total + cur.qty! * cur.product.price,
       0
     );
     setTotal(res);
@@ -30,10 +41,12 @@ const Cart = () => {
   const getCartList = async () => {
     try {
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { cartList },
-      }: IResult = await getNormalList({ type: "cartList" });
-      dispatch(cartActions.setCartList(cartList));
+
+      const { data }: { data: ICartItems } = await getCartListApi();
+
+      dispatch(cartActions.setCartList(data.cart_items));
+      dispatch(cartActions.setCartId(data.cart_id));
+
       dispatch(commonActions.setLoading(false));
     } catch (error) {
       dispatch(commonActions.setLoading(false));
@@ -51,7 +64,7 @@ const Cart = () => {
       <Wrapper>
         <CartContent>
           <Title>Cart</Title>
-          {cartList.length > 0 && (
+          {cartList && cartList?.length > 0 && (
             <>
               <CartTableContainer>
                 <CartTableHeader>
@@ -90,7 +103,7 @@ const Cart = () => {
               </BtnSetBox>
             </>
           )}
-          {cartList.length === 0 && (
+          {cartList?.length === 0 && (
             <Lottie jsonName={"sleepingAnt"} text="Your cart is empty" />
           )}
         </CartContent>

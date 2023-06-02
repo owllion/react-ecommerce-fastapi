@@ -7,25 +7,24 @@ import toast from "react-hot-toast";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import SingleProduct from "../Product/SingleProduct";
 import SectionTitle from "./SectionTitle";
-import { getNormalList } from "../../api/user.api";
+
 import { IProduct } from "../../interface/product.interface";
 import { commonActions } from "../../store/slice/Common.slice";
 import { userActions } from "../../store/slice/User.slice";
 import { Spacer } from "../../pages/ProductList";
 import NoResult from "./NoResult";
+import { getFavListApi } from "../../api/user.api";
 
 const FavList = () => {
   const dispatch = useAppDispatch();
-  const { favList } = useAppSelector((state) => state.user || {});
+  const { favorites } = useAppSelector((state) => state.user || {});
   const { isLoading } = useAppSelector((state) => state.common || {});
   const getFavListHandler = async () => {
     try {
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { favList },
-      } = await getNormalList({ type: "favList" });
+      const { data } = await getFavListApi();
       batch(() => {
-        dispatch(userActions.setFavList(favList));
+        dispatch(userActions.setFavorites(data));
         dispatch(commonActions.setLoading(false));
       });
     } catch (error) {
@@ -43,10 +42,10 @@ const FavList = () => {
     <Container>
       <SectionTitle title="Favorite" />
       <Wrapper>
-        {favList && (
+        {favorites && (
           <>
-            {favList.map((item) => (
-              <SingleBox key={item.productId}>
+            {favorites.map((item) => (
+              <SingleBox key={item.id}>
                 {Object.keys(item).length > 0 ? (
                   <SingleProduct item={item as IProduct} />
                 ) : (
@@ -57,7 +56,7 @@ const FavList = () => {
           </>
         )}
       </Wrapper>
-      {favList?.length === 0 && !isLoading && (
+      {favorites?.length === 0 && !isLoading && (
         <Flex>
           <NoResult
             imgText={"NOTHING HERE"}

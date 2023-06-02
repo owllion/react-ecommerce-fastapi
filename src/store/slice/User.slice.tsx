@@ -1,19 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct } from "../../interface/product.interface";
-import { IReview } from "../../interface/review.interface";
+import { IReview, IUserReview } from "../../interface/review.interface";
 import { IUser } from "../../interface/user.interface";
 import { IUserInfo } from "src/interface/user.interface";
 
 const initialState: Partial<IUser> = {
-  firstName: "",
+  id: "",
   email: "",
+  first_name: "",
+  last_name: "",
   fullName: "",
-  lastName: "",
-  avatarUpload: "",
-  avatarDefault: "",
+  upload_avatar: "",
+  default_avatar: "",
   phone: "",
-  favList: [],
+  favorites: [],
   reviewList: [],
+  userReviews: [],
   locale: "",
 };
 
@@ -22,64 +24,80 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserInfo(state, { payload }: PayloadAction<IUserInfo>) {
-      state.firstName = payload.firstName;
-      state.lastName = payload.lastName;
+      state.id = payload.id;
+      state.first_name = payload.first_name;
+      state.last_name = payload.last_name;
       state.email = payload.email;
       state.phone = payload.phone;
-      state.avatarUpload = payload.avatarUpload;
-      state.avatarDefault = payload.avatarDefault;
-      state.favList = payload.favList;
+      state.upload_avatar = payload.upload_avatar;
+      state.default_avatar = payload.default_avatar;
+      state.favorites = payload.favorites;
     },
     setGoogleLoginInfo(state, { payload }: PayloadAction<IUserInfo>) {
       const {
+        id,
         email,
         phone,
         fullName,
-        avatarDefault,
-        avatarUpload,
-        favList,
+        default_avatar,
+        upload_avatar,
+        favorites,
         locale,
       } = payload;
-      state.fullName = fullName;
+      state.id = id;
+      state.first_name = payload.first_name;
+      state.last_name = payload.last_name;
       state.email = email;
       state.phone = phone;
-      state.avatarDefault = avatarDefault;
-      state.avatarUpload = avatarUpload;
-      state.favList = favList;
+      state.default_avatar = default_avatar;
+      state.upload_avatar = upload_avatar;
+      state.favorites = favorites;
       state.locale = locale;
+    },
+    setGithubLoginInfo(state, { payload }: PayloadAction<IUserInfo>) {
+      state.id = payload.id;
+      state.default_avatar = payload.default_avatar;
+      state.upload_avatar = payload.upload_avatar;
+      state.first_name = payload.first_name;
+      state.last_name = payload.last_name;
+      state.phone = payload.phone;
+      console.log(payload.favorites, "這是favss!");
+      // state.favorites = payload.favorites;
     },
     updateUserInfo(state, { payload }: PayloadAction<Partial<IUser>>) {
       state.phone = payload.phone;
-      state.firstName = payload.firstName;
-      state.lastName = payload.lastName;
-      state.fullName = payload.fullName;
+      state.first_name = payload.first_name;
+      state.last_name = payload.last_name;
     },
     addToFav(state, { payload }: PayloadAction<IProduct>) {
-      state.favList?.push(payload);
+      state.favorites?.push(payload);
     },
     removeFromFav(state, { payload }: PayloadAction<IProduct>) {
-      state.favList = state.favList?.filter(
-        (item) => item?.productId !== payload.productId
+      state.favorites = state.favorites?.filter(
+        (item) => item?.id !== payload.id
       );
     },
-    setFavList(state, { payload }: PayloadAction<IProduct[]>) {
-      state.favList = payload;
+    setFavorites(state, { payload }: PayloadAction<IProduct[]>) {
+      state.favorites = payload;
     },
     setReviewList(state, { payload }: PayloadAction<IReview[]>) {
       state.reviewList = payload;
     },
+    setUserReviewList(state, { payload }: PayloadAction<IUserReview[]>) {
+      state.userReviews = payload;
+    },
     updateReview(
       state,
-      { payload }: PayloadAction<{ reviewId: string; comment: string }>
+      { payload }: PayloadAction<{ id: string; comment: string }>
     ) {
-      state.reviewList = state.reviewList?.map((review) =>
-        review.reviewId === payload.reviewId
+      state.userReviews = state.userReviews?.map((review) =>
+        review.id === payload.id
           ? { ...review, comment: payload.comment }
           : review
       );
     },
     updateAvatarUpload(state, { payload }: PayloadAction<string>) {
-      state.avatarUpload = payload;
+      state.upload_avatar = payload;
     },
   },
 });

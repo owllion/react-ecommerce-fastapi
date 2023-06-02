@@ -6,13 +6,13 @@ import Skeleton from "react-loading-skeleton";
 
 import cl from "../../constants/color/color";
 import SectionTitle from "./SectionTitle";
-import { getPopulatedList } from "src/api/user.api";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { IOrder } from "../../interface/order.interface";
+import { IOrder, IOrderInList } from "../../interface/order.interface";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { commonActions } from "../../store/slice/Common.slice";
 import NoResult from "./NoResult";
+import { getOrderListApi } from "../../api/user.api";
 interface IOrderList {
   data: {
     orderList: IOrder[];
@@ -23,14 +23,13 @@ const OrderList = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isLoading } = useAppSelector((state) => state.common || {});
-  const [orderList, setOrderList] = useState<IOrder[]>([]);
+  const { id } = useAppSelector((state) => state.user);
+  const [orderList, setOrderList] = useState<IOrderInList[]>([]);
   const getOrderList = async () => {
     try {
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { orderList },
-      }: IOrderList = await getPopulatedList({ type: "order" });
-      setOrderList(orderList);
+      const { data } = await getOrderListApi({ userId: id! });
+      setOrderList(data.list);
       dispatch(commonActions.setLoading(false));
     } catch (error) {
       dispatch(commonActions.setLoading(false));
@@ -67,24 +66,20 @@ const OrderList = () => {
                     <ID>
                       <Link
                         style={{ color: `${cl.lightBlue}` }}
-                        to={`/order/detail/${item.orderId}`}
+                        to={`/order/detail/${item.id}`}
                       >
-                        {item.orderId.substring(0, 7).toUpperCase()}
+                        {item.id.substring(0, 7).toUpperCase()}
                       </Link>
                     </ID>
 
-                    <Total>
-                      $
-                      {(item.discountTotal ? item.discountTotal : item.total) +
-                        item.shipping}
-                    </Total>
+                    <Total>${item.total}</Total>
                     <Status>
                       <Chip>
-                        {item.orderStatus === 0 ? "completed" : "canceled"}
+                        {item.order_status === 0 ? "completed" : "canceled"}
                       </Chip>
                     </Status>
                     <Date smaller>
-                      {dayjs(item.createdAt).format("YYYY MMMM DD")}
+                      {dayjs(item.created_at).format("YYYY MMMM DD")}
                     </Date>
                   </OrderItem>
                 ))}

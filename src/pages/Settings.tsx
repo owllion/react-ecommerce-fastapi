@@ -6,44 +6,35 @@ import { IoLogOutOutline } from "react-icons/io5";
 
 import cl from "../constants/color/color";
 import { Title } from "./Cart";
-import { sideNavLinks } from "../data/settingSideNavLink";
+import {
+  sideNavLinks,
+  sideNavLinksWithoutResetPwd,
+} from "../data/settingSideNavLink";
 import { confirmAlert } from "react-confirm-alert";
-import { logoutApi } from "../api/auth.api";
 import { useAppDispatch } from "../store/hooks";
 import { authActions } from "../store/slice/Auth.slice";
+
+type ILink = {
+  icon: any;
+  link: string;
+};
 
 const Settings = () => {
   const [sureToLogout, setSureToLogout] = useState(false);
   const [selectedPath, setSelectedPath] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [curLinks, setCurLinks] = useState<ILink[]>();
   const dispatch = useAppDispatch();
   const location = useLocation();
   const loginType = localStorage.getItem("loginType");
   const logout = async () => {
     try {
       dispatch(authActions.clearToken());
-      await logoutApi();
       localStorage.clear();
       window.location.href = "/auth/welcome";
     } catch (error) {
       console.log(error);
     }
-  };
-  const checkForLogout = () => {
-    confirmAlert({
-      title: "Confirm to logout",
-      message: "Are you sure to do this?",
-      buttons: [
-        {
-          label: "Sure",
-          onClick: () => setSureToLogout(true),
-        },
-        {
-          label: "No",
-          onClick: () => setSureToLogout(false),
-        },
-      ],
-    });
   };
 
   useEffect(() => {
@@ -51,11 +42,18 @@ const Settings = () => {
   }, [sureToLogout]);
 
   useEffect(() => {
-    setSelectedPath(location.pathname);
-    const index = sideNavLinks.findIndex(
-      (item) => item.link === location.pathname
+    const index = curLinks?.findIndex(
+      (item: ILink) => item.link === location.pathname
     );
-    setSelectedIndex(index);
+    setSelectedIndex(index!);
+  }, [curLinks]);
+
+  useEffect(() => {
+    loginType === "email"
+      ? setCurLinks(sideNavLinks!)
+      : setCurLinks(sideNavLinksWithoutResetPwd!);
+
+    setSelectedPath(location.pathname);
   }, [location]);
 
   return (
@@ -65,10 +63,10 @@ const Settings = () => {
         <DesktopWrapper>
           <SideBar>
             <BarItems type={loginType!}>
-              {sideNavLinks.map((item, index) => (
+              {curLinks?.map((item, index) => (
                 <BarItemLink
-                  to={item.link}
-                  key={item.link}
+                  to={item?.link}
+                  key={item?.link}
                   type={loginType!}
                   currentIndex={index}
                 >
@@ -177,7 +175,7 @@ const BarItems = styled.ul<{ type: string }>`
   @media (max-width: 500px) {
     overflow: scroll;
     overflow-y: hidden;
-    padding: 0 0 1.2rem ${({ type }) => (type === "google" ? "9rem" : "13rem")};
+    padding: 0 0 1.2rem ${({ type }) => (type === "email" ? "9rem" : "13rem")};
   }
 `;
 

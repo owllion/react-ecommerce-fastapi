@@ -1,12 +1,15 @@
 import { IReview } from "./review.interface";
+type Image = {
+  url: string;
+};
 
 export interface IProduct {
-  _id: string;
-  productId: string;
-  productName: string;
-  imageList: Array<string>;
+  id: string;
+  // productId: string;
+  product_name: string;
+  images: Image[];
   price: number;
-  salePrice?: number;
+  // salePrice?: number;
   brand: string;
   category: string;
   description: string;
@@ -18,15 +21,24 @@ export interface IProduct {
   qty?: number;
   reviews: IReview[];
   thumbnail: string;
-  thumbnailList: string[];
+  thumbnails: string[];
 }
 export interface IProductList {
   data: {
-    productList: [
-      { count: [{ totalDoc: number }]; list: (IProduct | Partial<IProduct>)[] }
-    ];
+    list: (IProduct | Partial<IProduct>)[];
+    total: number;
   };
 }
 export interface IGetProductDetail {
   productId: string | undefined;
+}
+
+export interface IGetProducts {
+  page: number;
+  keyword: string;
+  price: string;
+  brands: Array<String> | string;
+  categories: Array<String> | string;
+  sortBy: string;
+  orderBy: string;
 }

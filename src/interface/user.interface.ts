@@ -1,6 +1,6 @@
 import { IProduct } from "./product.interface";
 import { ICoupon } from "./coupon.interface";
-import { IReview } from "./review.interface";
+import { IReview, IUserReview } from "./review.interface";
 export interface Data {
   result: {
     token: string;
@@ -11,20 +11,22 @@ export interface Data {
       avatarDefault: string;
       avatarUpload: string;
       favList: IProduct[];
-      couponList: ICoupon[];
-      cartList: IProduct[];
+      // couponList: ICoupon[];
+      // cartList: IProduct[];
     };
   };
 }
 export interface IUser {
-  firstName: string;
-  lastName: string;
+  id: string;
+  first_name: string;
+  last_name: string;
   fullName?: string;
   email: string;
   phone: string | null;
-  avatarDefault: string;
-  avatarUpload: string;
-  favList: IProduct[];
+  default_avatar: string;
+  upload_avatar: string;
+  favorites: IProduct[];
+  userReviews: IUserReview[];
   couponList: ICoupon[];
   cartList: IProduct[];
   reviewList: IReview[];
@@ -41,48 +43,50 @@ export interface IUpload {
 export interface IForgotPassword {
   email: string;
 }
+
 export interface IResetPassword {
   token: string;
   password: string;
 }
-
-export interface IUserInfoModify {
-  firstName?: string;
-  lastName?: string;
-  phone?: string | null;
-}
 export interface IUserPasswordModify {
   password: string;
 }
+export interface IUserInfoModify {
+  first_name?: string;
+  last_name?: string;
+  phone?: string | null;
+  verified?: number;
+}
 
 interface IBaseProductInfo {
-  productId: string;
+  id: string;
   qty: number;
   size: string;
   cartList: IProduct[];
 }
 
-export interface IAddToFav extends Pick<IBaseProductInfo, "productId"> {}
-export interface IRemoveFromFav extends Pick<IBaseProductInfo, "productId"> {}
-
-export interface IRemoveFromCart
-  extends Pick<IBaseProductInfo, "productId" | "size"> {}
-export interface IUpdateQty
-  extends Pick<IBaseProductInfo, "productId" | "qty" | "size"> {
-  type: string;
+export interface IAddToFav {
+  product_id: string;
 }
-export interface IAddToCart
-  extends Pick<IBaseProductInfo, "productId" | "qty" | "size"> {}
-
-export interface IGetPopulatedList {
-  type: "order" | "review";
+export interface IRemoveFromFav {
+  product_id: string;
 }
-export interface IGetNormalList {
-  type: "cartList" | "favList" | "couponList";
+
+export interface IRemoveFromCart extends Pick<IBaseProductInfo, "size"> {
+  product_id: string;
+}
+export interface IUpdateQty extends Pick<IBaseProductInfo, "qty" | "size"> {
+  operation_type: string;
+  product_id: string;
+}
+export interface IAddToCart extends Pick<IBaseProductInfo, "qty" | "size"> {
+  product_id: string;
 }
 export interface IModifyReview {
-  reviewItem: {
-    reviewId: string;
-    comment: string;
-  };
+  id: string;
+  comment: string;
+}
+
+export interface IUserId {
+  userId: string;
 }

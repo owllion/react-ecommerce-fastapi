@@ -13,10 +13,10 @@ import OrderDetailSummary from "../components/UserSetting/OrderDetailSummary";
 import { SectionTitle } from "../components/Checkout/form/payment-form/PaymentForm.style";
 import { getOrderDetail } from "../api/user.api";
 import { IOrder } from "../interface/order.interface";
-import { useUpdateEffect } from "../hooks/useUpdateEffect";
 import { commonActions } from "../store/slice/Common.slice";
 import { useAppDispatch } from "../store/hooks";
-
+import linepay from "src/assets/order/linepay_png.png";
+import OrderItemsInDetailPage from "../components/UserSetting/OrderItemsInDetailPage";
 const OrderDetail = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
@@ -24,10 +24,9 @@ const OrderDetail = () => {
   const getOrderDetailHandler = async () => {
     try {
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { detail },
-      } = await getOrderDetail({ orderId: id! });
-      setDetail(detail);
+      const { data }: { data: IOrder } = await getOrderDetail({ orderId: id! });
+      setDetail(data);
+
       dispatch(commonActions.setLoading(false));
     } catch (error) {
       dispatch(commonActions.setLoading(false));
@@ -50,15 +49,15 @@ const OrderDetail = () => {
             <TopDetailBox>
               <TopLeft>
                 <span className="id">OrderID</span>
-                <span>{detail?.orderId.substring(0, 7).toUpperCase()}</span>
+                <span>{detail?.id.substring(0, 7).toUpperCase()}</span>
               </TopLeft>
               <TopRight>
                 <OrderPlacedDate>
-                  {dayjs(detail?.createdAt).format("YYYY MMMM DD")}
+                  {dayjs(detail?.created_at).format("YYYY MMMM DD")}
                 </OrderPlacedDate>
                 <OrderStatus>
                   <Chip>
-                    {detail?.orderStatus === 0 ? "Completed" : "Canceled"}
+                    {detail?.order_status === 0 ? "Completed" : "Canceled"}
                   </Chip>
                 </OrderStatus>
               </TopRight>
@@ -73,42 +72,48 @@ const OrderDetail = () => {
                 <Title>Shipping Address</Title>
                 <NameBox>
                   <FirstName>
-                    {detail?.receiverName.substring(
+                    {detail?.receiver_name.substring(
                       0,
-                      detail?.receiverName.indexOf(" ")
+                      detail?.receiver_name.indexOf(" ")
                     )}
                   </FirstName>
                   <LastName>
-                    {detail?.receiverName.substring(
-                      detail?.receiverName.indexOf(" ") + 1
+                    {detail?.receiver_name.substring(
+                      detail?.receiver_name.indexOf(" ") + 1
                     )}
                   </LastName>
                 </NameBox>
                 <AddressDetailBox>
-                  <Address>{detail?.deliveryAddress}</Address>
+                  <Address>{detail?.delivery_address}</Address>
                 </AddressDetailBox>
               </Left>
               <Right>
                 <Title>Payment Method</Title>
-                <FlexBox>
-                  <ImgBox>
-                    <Img src={visa} alt="visa" />
-                  </ImgBox>
-                  <CardNumber>**** 4242</CardNumber>
-                </FlexBox>
+                {detail?.payment_method === "credit_card" ? (
+                  <FlexBox>
+                    <ImgBox>
+                      <Img src={visa} alt="visa" />
+                    </ImgBox>
+                    <CardNumber>**** 4242</CardNumber>
+                  </FlexBox>
+                ) : (
+                  <FlexBox>
+                    <LinePayImg src={linepay} />
+                  </FlexBox>
+                )}
               </Right>
             </ContentBox>
             <AddressDividerBox>
               <AddressDivider></AddressDivider>
             </AddressDividerBox>
           </AddressAndPayment>
-          <OrderDetailSummary
+          <OrderItemsInDetailPage
             needContainer={true}
-            itemList={detail?.orderItem!}
+            itemList={detail?.order_items!}
             shipping={detail?.shipping!}
             discount={detail?.discount!}
             total={detail?.total!}
-            discountTotal={detail?.discountTotal!}
+            discountTotal={detail?.discount_total!}
           />
         </Main>
       </Wrapper>
@@ -258,5 +263,10 @@ const AddressDivider = styled.div`
     transparent 0,
     transparent 82px
   );
+`;
+export const LinePayImg = styled.img`
+  width: 20%;
+  height: 20%;
+  object-fit: contain;
 `;
 export default OrderDetail;

@@ -13,6 +13,10 @@ const SendLinkNotification = lazy(() =>
   import("../components/Auth/SendLinkNotification")
 );
 const VerifyEmail = lazy(() => import("../components/Auth/verify/VerifyEmail"));
+
+const GithubLoginCallback = lazy(() =>
+  import("../components/Auth/GithubLoginCallback")
+);
 const ForgotPassword = lazy(() =>
   import("../components/Auth/ForgotPassword.tsx")
 );
@@ -47,6 +51,9 @@ const ShipAndPay = lazy(() => import("../pages/ShipAndPay.tsx"));
 const OrderComplete = lazy(() =>
   import("../components/Checkout/OrderComplete.tsx")
 );
+
+const TermsofService = lazy(() => import("../pages/TermsOfService.jsx"));
+const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy.jsx"));
 
 const NotFound = lazy(() => import("../pages/NotFound.tsx"));
 
@@ -92,11 +99,18 @@ export const RouteConfig = () => {
           path: "verify-email/:token",
           element: <VerifyEmail />,
         },
+
+        {
+          path: "github-login/callback",
+          element: <GithubLoginCallback />,
+        },
       ],
     },
 
     { path: "/product-list", element: <ProductList /> },
     { path: "/product-detail/:id", element: <ProductDetail /> },
+    { path: "/privacy-policy", element: <PrivacyPolicy /> },
+    { path: "/terms-of-services", element: <TermsofService /> },
 
     {
       path: "/checkout",

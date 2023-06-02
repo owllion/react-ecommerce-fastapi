@@ -14,7 +14,8 @@ interface IAuthResult {
   };
 }
 
-export const googleLogin = (code: string): AppThunk => {
+// export const googleLogin = (code: string): AppThunk => {
+export const googleLogin = (access_token: string): AppThunk => {
   return async (dispatch) => {
     dispatch(commonActions.setLoading(true));
     try {
@@ -24,7 +25,7 @@ export const googleLogin = (code: string): AppThunk => {
         },
       }: {
         data: IAuthResult;
-      } = await googleLoginApi({ code });
+      } = await googleLoginApi({ access_token });
 
       dispatch(
         authRelatedAction({

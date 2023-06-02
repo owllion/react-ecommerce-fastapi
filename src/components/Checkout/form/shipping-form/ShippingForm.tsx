@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { LinePayImg } from "../../../../pages/OrderDetail";
 import { useAppSelector, useAppDispatch } from "../../../../store/hooks";
 import { SectionTitle } from "../payment-form/PaymentForm.style";
 import { countries } from "src/data/countries";
@@ -12,15 +12,16 @@ import FieldErr from "src/components/error/FieldErr";
 import * as SC from "./ShippingForm.style";
 import PaymentForm from "../PaymentForm";
 import { PayBtn } from "../payment-form/PaymentForm.style";
-import { createOrder } from "src/api/user.api";
+import { payWithCreditCard, payWithLinePay } from "src/api/user.api";
 import toast from "react-hot-toast";
 import { commonActions } from "../../../../store/slice/Common.slice";
 import { cartActions } from "../../../../store/slice/Cart.slice";
 import { checkoutActions } from "../../../../store/slice/Checkout.slice";
+import linepay from "src/assets/order/linepay_png.png";
 
 interface FormValue {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   address: string;
   state: string;
   zip: number;
@@ -29,35 +30,56 @@ interface FormValue {
 const ShippingForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { cartList } = useAppSelector((state) => state.cart || {});
-  const { total, shipping, discountTotal, discount, discountCode } =
-    useAppSelector((state) => state.checkout || {});
-  const { locale } = useAppSelector((state) => state.user || {});
+  const { cartList, cartId } = useAppSelector((state) => state.cart || {});
+  const { total, shipping, discount_total, discount, discount_code } =
+    useAppSelector((state) => state.checkout);
+  const { locale, id } = useAppSelector((state) => state.user || {});
   const [userLocale, setUserLocale] = useState("");
+  const [curBtnName, setCurBtnName] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string | undefined>(
     userLocale || "Taiwan"
   );
   const [active, setActive] = useState(false);
-
-  const createOrderHandler = async (info: FormValue) => {
+  const haveUsedCoupon = () => discount !== 0;
+  const createOrderHandler = async (info: FormValue, type: string) => {
     try {
       // dispatch(commonActions.setLoading(true));
-      await createOrder({
-        orderItem: cartList,
-        receiverName: `${info.firstName} ${info.lastName}`,
-        deliveryAddress: `${info.zip} ${selectedCountry} ${info.state} ${info.address}`,
-        shipping,
-        total, //就是subtotal
-        discountTotal, //打完折的總價
-        discount,
-        discountCode,
-      });
-      dispatch(cartActions.resetCartLength());
-      dispatch(checkoutActions.clearInfo());
-      dispatch(commonActions.setLoading(false));
-      navigate("/checkout/order-complete", {
-        replace: true,
-      });
+      if (type === "linepay") {
+        const {
+          data: { url },
+        }: { data: { url: string } } = await payWithLinePay({
+          cart_id: cartId,
+          owner_id: id!,
+          order_items: cartList,
+          receiver_name: `${info.first_name} ${info.last_name}`,
+          delivery_address: `${info.zip} ${selectedCountry} ${info.state} ${info.address}`,
+          shipping,
+          total,
+          discount_total,
+          discount,
+          discount_code,
+        });
+        // dispatch(commonActions.setLoading(false));
+        window.location.href = url;
+      } else {
+        await payWithCreditCard({
+          cart_id: cartId,
+          owner_id: id!,
+          order_items: cartList,
+          receiver_name: `${info.first_name} ${info.last_name}`,
+          delivery_address: `${info.zip} ${selectedCountry} ${info.state} ${info.address}`,
+          shipping,
+          total, //就是subtotal
+          discount_total, //打完折的總價
+          discount,
+          discount_code,
+        });
+        dispatch(cartActions.resetCartLength());
+        dispatch(checkoutActions.clearInfo());
+        navigate("/checkout/order-complete", {
+          replace: true,
+        });
+      }
     } catch (error) {
       // dispatch(commonActions.setLoading(false));
 
@@ -81,9 +103,13 @@ const ShippingForm = () => {
     handleSubmit,
     formState: { errors },
   } = methods;
-  const onSubmit: SubmitHandler<FormValue> = async (data) =>
-    await createOrderHandler(data);
-  console.log(errors);
+  const onSubmit: SubmitHandler<FormValue> = async (data, event) => {
+    const formElement = event?.target as HTMLFormElement;
+    // const btnName = formElement.getElementsByTagName("button")[1].name;
+    console.log(curBtnName, "當前名稱");
+    await createOrderHandler(data, curBtnName);
+    console.log(errors);
+  };
 
   useEffect(() => {
     dispatch(checkoutActions.setDiscount(0));
@@ -99,36 +125,35 @@ const ShippingForm = () => {
   }, [locale]);
 
   return (
-    <FormProvider {...methods}>
-      <SC.ShippingContainer>
+    <SC.ShippingContainer>
+      <FormProvider {...methods}>
         <SectionTitle>SHIPPING ADDRESS</SectionTitle>
         <SC.FormContainer onSubmit={handleSubmit(onSubmit)}>
           <SC.RowFlexBox>
             <SC.LeftInputBox>
-              <SC.Label error={errors.firstName}>First Name</SC.Label>
+              <SC.Label error={errors.first_name}>First Name</SC.Label>
               <SC.Input
-                error={errors.firstName}
+                error={errors.first_name}
                 {...register(
-                  "firstName",
+                  "first_name",
                   getValidationData(["maxLength", "required", "alphabetical"])
                 )}
               />
-              <FieldErr errors={errors} field="firstName" />
+              <FieldErr errors={errors} field="first_name" />
             </SC.LeftInputBox>
 
             <SC.RightInputBox>
-              <SC.Label error={errors.lastName}>Last Name</SC.Label>
+              <SC.Label error={errors.last_name}>Last Name</SC.Label>
               <SC.Input
-                error={errors.lastName}
+                error={errors.last_name}
                 {...register(
-                  "lastName",
+                  "last_name",
                   getValidationData(["required", "alphabetical"])
                 )}
               />
-              <FieldErr errors={errors} field="lastName" />
+              <FieldErr errors={errors} field="last_name" />
             </SC.RightInputBox>
           </SC.RowFlexBox>
-
           <SC.SingleInputBox>
             <SC.Label>Country</SC.Label>
             <Select
@@ -141,7 +166,6 @@ const ShippingForm = () => {
               active={active}
             />
           </SC.SingleInputBox>
-
           <SC.SingleInputBox>
             <SC.Label>Address</SC.Label>
             <SC.Input
@@ -150,7 +174,6 @@ const ShippingForm = () => {
             />
             <FieldErr errors={errors} field="address" />
           </SC.SingleInputBox>
-
           <SC.RowFlexBox>
             <SC.LeftInputBox>
               <SC.Label error={errors.state}>State/County</SC.Label>
@@ -173,14 +196,29 @@ const ShippingForm = () => {
               <FieldErr errors={errors} field="zip" />
             </SC.RightInputBox>
           </SC.RowFlexBox>
-
           <SectionTitle>Payment Info</SectionTitle>
           <PaymentForm />
-
-          <PayBtn>Pay</PayBtn>
+          <PayBtn
+            name="card"
+            onClick={() => {
+              setCurBtnName("card");
+            }}
+          >
+            Pay with credit card
+          </PayBtn>
+          {!haveUsedCoupon() && (
+            <SC.LinePayBtn
+              name="linepay"
+              onClick={() => {
+                setCurBtnName("linepay");
+              }}
+            >
+              <LinePayImg src={linepay} />
+            </SC.LinePayBtn>
+          )}
         </SC.FormContainer>
-      </SC.ShippingContainer>
-    </FormProvider>
+      </FormProvider>
+    </SC.ShippingContainer>
   );
 };
 

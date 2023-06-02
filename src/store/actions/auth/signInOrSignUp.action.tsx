@@ -7,11 +7,10 @@ import { registerApi, loginApi } from "src/api/auth.api";
 import { IUserInfo } from "src/interface/user.interface";
 import { authRelatedAction } from "./authRelatedAction.action";
 export interface IAuthResult {
-  result: {
-    token: string;
-    refreshToken: string;
-    user: IUserInfo;
-  };
+  token: string;
+  refresh_token: string;
+  user: IUserInfo;
+  cart_length: number;
 }
 
 interface IProps extends Record<string, string> {}
@@ -24,9 +23,7 @@ const signInOrSignUp = (data: IProps): AppThunk => {
     dispatch(commonActions.setLoading(true));
     try {
       const {
-        data: {
-          result: { token, refreshToken, user },
-        },
+        data: { token, refresh_token, user, cart_length },
       }: {
         data: IAuthResult;
       } = isLogin(data)
@@ -36,8 +33,8 @@ const signInOrSignUp = (data: IProps): AppThunk => {
           })
         : await registerApi({
             email: data.email,
-            firstName: data.firstName,
-            lastName: data.lastName,
+            first_name: data.first_name,
+            last_name: data.last_name,
             password: data.password,
           });
 
@@ -46,8 +43,8 @@ const signInOrSignUp = (data: IProps): AppThunk => {
           authRelatedAction({
             user,
             token,
-            refreshToken,
-            cartLength: user.cartLength,
+            refreshToken: refresh_token,
+            cartLength: cart_length,
             type: "email",
           })
         );

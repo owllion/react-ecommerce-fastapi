@@ -1,34 +1,29 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 import SectionTitle from "../SectionTitle";
-import { getPopulatedList } from "../../../api/user.api";
 import { IReview } from "../../../interface/review.interface";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { commonActions } from "../../../store/slice/Common.slice";
 import NoResult from "src/components/UserSetting/NoResult";
 import { userActions } from "../../../store/slice/User.slice";
 import Review from "./Review";
-interface IGetReviewList {
-  data: {
-    reviewList: IReview[];
-  };
-}
+import { getReviewListApi } from "../../../api/user.api";
 
 const ReviewList = () => {
   const dispatch = useAppDispatch();
-  const { reviewList } = useAppSelector((state) => state.user || {});
+  const { id, userReviews } = useAppSelector((state) => state.user || {});
   const { isLoading } = useAppSelector((state) => state.common || {});
+  const [reviewList, setReviewList] = useState<IReview[]>();
 
   const getReviewList = async () => {
     try {
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { reviewList },
-      }: IGetReviewList = await getPopulatedList({ type: "review" });
-      dispatch(userActions.setReviewList(reviewList));
+      const { data } = await getReviewListApi({ userId: id! });
+      setReviewList(data);
+      dispatch(userActions.setUserReviewList(data));
       dispatch(commonActions.setLoading(false));
     } catch (error) {
       dispatch(commonActions.setLoading(false));
@@ -44,11 +39,11 @@ const ReviewList = () => {
     <Container>
       <SectionTitle title="ReviewList" />
 
-      {reviewList?.map((review) => (
+      {userReviews?.map((review) => (
         <Review review={review} />
       ))}
 
-      {reviewList?.length === 0 && !isLoading && (
+      {userReviews?.length === 0 && !isLoading && (
         <NoResult imgText={"NOTHING HERE"} showBtn={false} />
       )}
     </Container>

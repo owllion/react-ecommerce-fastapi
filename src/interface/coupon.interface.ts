@@ -1,13 +1,13 @@
 export interface ICoupon {
   code: string;
-  discountType: string;
+  discount_type: string;
   amount: number;
-  expiryDate: Date;
-  minimumAmount: number;
-  isUsed: boolean;
+  expiry_date: Date;
+  minimum_amount: number;
+  is_used: boolean;
 }
 
 export interface IApplyCoupon {
   code: string;
-  totalPrice: number;
+  total_price: number;
 }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IReview } from "../../interface/review.interface";
+import { IReview, IUserReview } from "../../interface/review.interface";
 import { IProduct } from "../../interface/product.interface";
 export interface ProductState {
   productId: string;
@@ -18,6 +18,7 @@ const initialState = {
   productId: "",
   productList: [],
   reviews: [],
+
   selectedCategory: [],
   selectedBrand: [],
   selectedPrice: "",
@@ -70,12 +71,12 @@ const productSlice = createSlice({
       console.log(payload, "收到的字串");
       console.log(
         state.productList.filter((item) =>
-          payload ? item.productName?.toLowerCase().includes(payload) : item
+          payload ? item.product_name?.toLowerCase().includes(payload) : item
         ),
         "這是filter節果"
       );
       state.productList = [...state.productList].filter((item) =>
-        payload ? item.productName?.toLowerCase().includes(payload) : item
+        payload ? item.product_name?.toLowerCase().includes(payload) : item
       );
     },
     setTotalProductNum(state, { payload }: PayloadAction<number>) {

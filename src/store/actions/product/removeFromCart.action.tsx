@@ -7,18 +7,15 @@ import { removeFromCartApi } from "../../../api/user.api";
 
 export interface IRemoveFromCartAction {
   qty: number;
-  productId: string;
+  id: string;
   size: string;
 }
-const removeFromCart = ({
-  qty,
-  productId,
-  size,
-}: IRemoveFromCartAction): AppThunk => {
+const removeFromCart = ({ qty, id, size }: IRemoveFromCartAction): AppThunk => {
   return async (dispatch) => {
+    console.log(qty, id, size, "全部印出");
     try {
-      await removeFromCartApi({ productId, size });
-      dispatch(cartActions.removeFromCart({ productId, size }));
+      await removeFromCartApi({ product_id: id, size });
+      dispatch(cartActions.removeFromCart({ id, size }));
       dispatch(cartActions.setCartLength(qty * -1));
     } catch (error) {
       const err = ((error as AxiosError).response?.data as { msg: string }).msg;

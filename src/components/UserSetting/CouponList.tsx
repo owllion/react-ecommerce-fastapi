@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
 
-import { getNormalList } from "../../api/user.api";
 import cl from "../../constants/color/color";
 import { ICoupon } from "../../interface/coupon.interface";
 import Coupon from "./Coupon";
@@ -11,20 +10,18 @@ import SectionTitle from "./SectionTitle";
 import NoResult from "./NoResult";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { commonActions } from "../../store/slice/Common.slice";
+import { getCouponListApi } from "../../api/user.api";
 
-interface IGetCouponList {
-  data: {
-    couponList: ICoupon[];
-  };
-}
 const isExpired = (expiryDate: Date) => {
   const now = Date.now() / 1000;
   const expire = Math.floor(new Date(expiryDate).valueOf() / 1000);
+  console.log(expire - now < 0, "有沒有過期??");
 
   return expire - now < 0;
 };
 const CouponList = () => {
   const { isLoading } = useAppSelector((state) => state.common || {});
+  const { id } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const [selected, setSelected] = useState("unused");
@@ -33,16 +30,10 @@ const CouponList = () => {
 
   const getCouponList = async () => {
     try {
+      console.log(id, "this is id");
       dispatch(commonActions.setLoading(true));
-      const {
-        data: { couponList },
-      }: IGetCouponList = await getNormalList({ type: "couponList" });
-      setCouponList(couponList);
-      setFilteredList(
-        couponList?.filter(
-          (item) => !item.isUsed && !isExpired(item.expiryDate)
-        )
-      );
+      const { data } = await getCouponListApi({ userId: id! });
+      setCouponList(data);
       dispatch(commonActions.setLoading(false));
     } catch (error) {
       dispatch(commonActions.setLoading(false));
@@ -57,12 +48,12 @@ const CouponList = () => {
   useEffect(() => {
     const list = couponList?.filter((item) => {
       if (selected === "unused")
-        return !isExpired(item.expiryDate) && !item.isUsed;
-      if (selected === "used") return item.isUsed;
-      else return isExpired(item.expiryDate);
+        return !isExpired(item.expiry_date) && !item.is_used;
+      if (selected === "used") return item.is_used;
+      else return isExpired(item.expiry_date);
     });
     setFilteredList(list);
-  }, [selected]);
+  }, [couponList, selected]);
   return (
     <Container>
       <SectionTitle title="CouponList" />
