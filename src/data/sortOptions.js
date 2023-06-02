@@ -10,27 +10,27 @@ import { IoMdInfinite } from "react-icons/io";
 export const sortOptions = [
   {
     name: "All",
-    val: "all",
+    val: "",
     icon: <IoMdInfinite />,
   },
   {
     name: "A-Z",
-    val: "productName-asc",
+    val: "product_name-asc",
     icon: <FcAlphabeticalSortingAz />,
   },
   {
     name: "Z-A",
-    val: "productName-desc",
+    val: "product_name-desc",
     icon: <FcAlphabeticalSortingZa />,
   },
   {
     name: "New-Old",
-    val: "createdAt-asc",
+    val: "created_at-asc",
     icon: <FcClock />,
   },
   {
     name: "Old-New",
-    val: "createdAt-desc",
+    val: "created_at-desc",
     icon: <FcClock />,
   },
   // {
