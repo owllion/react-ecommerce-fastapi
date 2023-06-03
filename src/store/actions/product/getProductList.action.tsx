@@ -14,6 +14,7 @@ import { productActions } from "../../slice/Product.slice";
 
 const getProductList = (keyword: string): AppThunk => {
   return async (dispatch, getState) => {
+    dispatch(productActions.resetProductList());
     try {
       const state = getState().product;
       const {
@@ -45,6 +46,7 @@ const getProductList = (keyword: string): AppThunk => {
       };
 
       dispatch(commonActions.setLoading(true));
+      console.log(getState().common.isLoading, "這是sloading，應該要是true");
 
       const {
         data: { list, total },
@@ -64,12 +66,13 @@ const getProductList = (keyword: string): AppThunk => {
 
       dispatch(productActions.setProductList(list as IProduct[]));
       dispatch(commonActions.setLoading(false));
+      console.log(getState().common.isLoading, "這是sloading，應該要是false");
     } catch (error) {
       const err = error as AxiosError;
       dispatch(commonActions.setLoading(false));
 
       if (err.response && err.response.data)
-        console.log((err.response.data as { msg: string }).msg);
+        console.log((err.response.data as { detail: string }).detail);
     }
   };
 };

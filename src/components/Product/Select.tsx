@@ -106,7 +106,7 @@ const SelectBtnText = styled.div`
 
 const Options = styled.ul<{ active: boolean; needScroll?: boolean }>`
   ${({ needScroll }) => needScroll && "overflow-y: scroll"};
-  height: 500px;
+  height: 400px;
   position: absolute;
   width: 100%;
   z-index: 10;

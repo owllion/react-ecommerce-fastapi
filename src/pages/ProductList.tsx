@@ -91,7 +91,10 @@ const ProductList = () => {
 
     setFilteredList(productList);
   }, [productList]);
-
+  useEffect(() => {
+    console.log("filteredList length:", filteredList?.length);
+    console.log(isLoading, "這是isLoading");
+  }, [filteredList]);
   useEffect(() => {
     setFilteredTotalNum(totalNum);
   }, [totalNum]);
@@ -133,8 +136,8 @@ const ProductList = () => {
               />
             </Func>
           </Top>
-          {isLoading && filteredList?.length === 0 && (
-            <Lottie jsonName={"productListLoading"} />
+          {isLoading && (
+            <Lottie jsonName={"productListLoading"} text="loading" />
           )}
           {filteredList!?.length > 0 && (
             <>

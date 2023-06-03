@@ -64,8 +64,12 @@ const productSlice = createSlice({
     setIsTargetWidth(state, { payload }: PayloadAction<boolean>) {
       state.isTargetWidth = payload;
     },
+
     setProductList(state, { payload }: PayloadAction<IProduct[]>) {
       state.productList = payload;
+    },
+    resetProductList(state) {
+      state.productList = [];
     },
     filterProductList(state, { payload }: PayloadAction<string | undefined>) {
       console.log(payload, "收到的字串");
