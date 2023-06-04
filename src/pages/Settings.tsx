@@ -263,8 +263,9 @@ const BarItem = styled.li<{
   }
 `;
 const BarItemLink = styled(Link)<{ currentIndex: number; type: string }>`
-  display: ${({ currentIndex, type }) =>
-    currentIndex === 1 && type === "google" ? "none" : "flex"};
+  /* display: ${({ currentIndex, type }) =>
+    currentIndex === 1 && type === "google" ? "none" : "flex"}; */
+  display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
