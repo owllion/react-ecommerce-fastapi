@@ -36,7 +36,7 @@ export const googleLogin = (access_token: string): AppThunk => {
       toast.success("You have signed in successfully!");
       console.log("toase後面");
     } catch (error) {
-      console.log("進入catch");
+      console.log("進入catch sec");
       dispatch(commonActions.setLoading(false));
 
       const err = ((error as AxiosError).response?.data as { detail: string })
