@@ -1,18 +1,13 @@
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { AnyAction } from "@reduxjs/toolkit";
 
 import { commonActions } from "../../slice/Common.slice";
 import { AppThunk } from "../../store";
 import { googleLoginApi } from "src/api/auth.api";
 import { IUserInfo } from "src/interface/user.interface";
 import { authRelatedAction } from "./authRelatedAction.action";
-interface IAuthResult {
-  result: {
-    token: string;
-    refreshToken: string;
-    user: IUserInfo;
-  };
-}
+import { IAuthResult } from "./signInOrSignUp.action";
 
 // export const googleLogin = (code: string): AppThunk => {
 export const googleLogin = (access_token: string): AppThunk => {
@@ -20,9 +15,7 @@ export const googleLogin = (access_token: string): AppThunk => {
     dispatch(commonActions.setLoading(true));
     try {
       const {
-        data: {
-          result: { token, refreshToken, user },
-        },
+        data: { token: access_Token, refresh_token, user, cart_length },
       }: {
         data: IAuthResult;
       } = await googleLoginApi({ access_token });
@@ -30,20 +23,24 @@ export const googleLogin = (access_token: string): AppThunk => {
       dispatch(
         authRelatedAction({
           user,
-          token,
-          refreshToken,
-          cartLength: user.cartLength,
+          token: access_Token,
+          refreshToken: refresh_token,
+          cartLength: cart_length,
           type: "google",
-        })
+        }) as unknown as AnyAction
       );
 
       dispatch(commonActions.setLoading(false));
+      console.log("有成功嗎?");
 
       toast.success("You have signed in successfully!");
+      console.log("toase後面");
     } catch (error) {
+      console.log("進入catch");
       dispatch(commonActions.setLoading(false));
 
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
       throw new Error(err);
     }

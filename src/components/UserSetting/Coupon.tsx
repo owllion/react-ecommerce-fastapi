@@ -25,9 +25,9 @@ const almostExpired = (expiry_date: Date) => {
 };
 
 const getRestTimeCounter = (count: Array<number>) => {
-  return `${count[0]}day${count[0] > 1 ? "s" : ""} ${count[1]}hours ${
+  return `${count[0]} day${count[0] > 1 ? "s" : ""} ${count[1]} hours ${
     count[2]
-  }min left`;
+  } min left`;
 };
 
 const getExpirationDate = (expiry_date: Date) => {

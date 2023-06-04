@@ -22,7 +22,9 @@ const WelcomeView = () => {
   const googleLoginHandler = async (access_token: string) => {
     try {
       await dispatch(googleLogin(access_token) as unknown as AnyAction);
+      console.log("回到welcomeView");
       navigate("/");
+      console.log("navigate下面");
     } catch (error) {
       console.log(error);
     }
