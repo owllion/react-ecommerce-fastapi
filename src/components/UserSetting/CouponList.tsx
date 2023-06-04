@@ -15,10 +15,10 @@ import { getCouponListApi } from "../../api/user.api";
 const isExpired = (expiryDate: Date) => {
   const now = Date.now() / 1000;
   const expire = Math.floor(new Date(expiryDate).valueOf() / 1000);
-  console.log(expire - now < 0, "有沒有過期??");
 
   return expire - now < 0;
 };
+
 const CouponList = () => {
   const { isLoading } = useAppSelector((state) => state.common || {});
   const { id } = useAppSelector((state) => state.user);
@@ -30,7 +30,6 @@ const CouponList = () => {
 
   const getCouponList = async () => {
     try {
-      console.log(id, "this is id");
       dispatch(commonActions.setLoading(true));
       const { data } = await getCouponListApi({ userId: id! });
       setCouponList(data);
@@ -48,9 +47,9 @@ const CouponList = () => {
   useEffect(() => {
     const list = couponList?.filter((item) => {
       if (selected === "unused")
-        return !isExpired(item.expiry_date) && !item.is_used;
+        return !isExpired(item.coupon.expiry_date) && !item.is_used;
       if (selected === "used") return item.is_used;
-      else return isExpired(item.expiry_date);
+      else return isExpired(item.coupon.expiry_date);
     });
     setFilteredList(list);
   }, [couponList, selected]);
@@ -94,7 +93,7 @@ const CouponList = () => {
           </StateBar>
           <Wrapper>
             {filteredList?.map((item) => (
-              <SingleBox key={item.code}>
+              <SingleBox key={item.coupon.code}>
                 <Coupon {...item} />
               </SingleBox>
             ))}

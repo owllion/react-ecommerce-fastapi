@@ -37,7 +37,7 @@ const getExpirationDate = (expiry_date: Date) => {
 
 const Coupon = (props: ICoupon) => {
   const { amount, code, discount_type, minimum_amount, expiry_date, is_used } =
-    props;
+    props.coupon;
   almostExpired(expiry_date);
   return (
     <CouponContainer>
