@@ -41,7 +41,8 @@ const SendLinkNotification = () => {
         replace: true,
       });
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       dispatch(commonActions.setError(err));
       toast.error(err);
     }

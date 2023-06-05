@@ -57,7 +57,7 @@ const signInOrSignUp = (data: IProps): AppThunk => {
       dispatch(commonActions.setLoading(false));
 
       if (err.response && err.response.data) {
-        const errMsg = (err.response?.data as { msg: string }).msg;
+        const errMsg = (err.response?.data as { detail: string }).detail;
 
         dispatch(commonActions.setError(errMsg));
         toast.error(errMsg);

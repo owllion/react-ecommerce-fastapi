@@ -58,7 +58,7 @@ instance.interceptors.response.use(
           const err = error as AxiosError;
           if (err.response && err.response.data) {
             // fail to update access_token (refreshToken is expired->cause 401 error)
-            const errMsg = (err.response?.data as { msg: string }).msg;
+            const errMsg = (err.response?.data as { detail: string }).detail;
 
             localStorage.removeItem("token");
             localStorage.removeItem("refreshToken");

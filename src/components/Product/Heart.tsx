@@ -38,8 +38,9 @@ const Heart = ({ item }: { item: IProduct | undefined }) => {
       dispatch(commonActions.setFavLoading(false));
     } catch (error) {
       dispatch(commonActions.setFavLoading(false));
-      const errMsg = ((error as AxiosError).response?.data as { msg: string })
-        .msg;
+      const errMsg = (
+        (error as AxiosError).response?.data as { detail: string }
+      ).detail;
       toast.error(errMsg);
     }
   };

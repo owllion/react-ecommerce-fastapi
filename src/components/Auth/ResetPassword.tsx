@@ -49,7 +49,8 @@ const ResetPassword = () => {
       toast.success("Password reset successfully!");
       navigate("/auth/welcome");
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
 
       setIsVerified(false);
@@ -64,7 +65,8 @@ const ResetPassword = () => {
         replace: true,
       });
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       dispatch(commonActions.setError(err));
 
       toast.error(err);

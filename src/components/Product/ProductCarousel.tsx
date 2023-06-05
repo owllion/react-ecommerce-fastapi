@@ -31,7 +31,7 @@ const ProductCarousel = () => {
       setBestSellerList(data);
     } catch (error) {
       const err = error as AxiosError;
-      const msg = (err.response?.data as { msg: string }).msg;
+      const msg = (err.response?.data as { detail: string }).detail;
       toast.error(msg);
     }
   };

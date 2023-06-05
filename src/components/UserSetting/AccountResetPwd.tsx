@@ -20,7 +20,8 @@ const AccountResetPwd = () => {
       await userPasswordModify({ password });
       toast.success("modify successfully,you can use new password to login");
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };

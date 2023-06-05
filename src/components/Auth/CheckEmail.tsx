@@ -49,8 +49,8 @@ const CheckEmail = () => {
           });
     } catch (error) {
       if (error && error instanceof AxiosError) {
-        const err = ((error as AxiosError).response?.data as { msg: string })
-          .msg;
+        const err = ((error as AxiosError).response?.data as { detail: string })
+          .detail;
         return dispatch(commonActions.setError(err));
       }
       dispatch(commonActions.setError("something wrong"));

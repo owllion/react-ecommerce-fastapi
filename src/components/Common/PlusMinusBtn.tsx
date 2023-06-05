@@ -40,7 +40,8 @@ const PlusMinusBtn = ({ cartItemQty, size, productId }: IProps) => {
       setLocalLoading(false);
     } catch (error) {
       setLocalLoading(false);
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };

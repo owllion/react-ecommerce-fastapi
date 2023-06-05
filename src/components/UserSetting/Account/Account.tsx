@@ -61,7 +61,7 @@ const Account = () => {
 
       const err = error as AxiosError;
       if (err.response && err.response.data) {
-        const errMsg = (err.response?.data as { msg: string }).msg;
+        const errMsg = (err.response?.data as { detail: string }).detail;
         toast.error(errMsg);
       }
     }

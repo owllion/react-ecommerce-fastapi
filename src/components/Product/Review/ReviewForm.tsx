@@ -63,8 +63,8 @@ const ReviewForm = () => {
         comment: "",
       });
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string })
-        ?.msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        ?.detail;
       toast.error(err);
       setRating(5);
       setCount(0);

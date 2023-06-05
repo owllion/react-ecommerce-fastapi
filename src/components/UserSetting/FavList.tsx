@@ -30,7 +30,8 @@ const FavList = () => {
     } catch (error) {
       dispatch(commonActions.setLoading(false));
 
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };

@@ -18,7 +18,8 @@ const removeFromCart = ({ qty, id, size }: IRemoveFromCartAction): AppThunk => {
       dispatch(cartActions.removeFromCart({ id, size }));
       dispatch(cartActions.setCartLength(qty * -1));
     } catch (error) {
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };

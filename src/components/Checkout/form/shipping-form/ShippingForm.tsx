@@ -43,7 +43,7 @@ const ShippingForm = () => {
   const haveUsedCoupon = () => discount !== 0;
   const createOrderHandler = async (info: FormValue, type: string) => {
     try {
-      // dispatch(commonActions.setLoading(true));
+      dispatch(commonActions.setLoading(true));
       if (type === "linepay") {
         const {
           data: { url },
@@ -59,7 +59,7 @@ const ShippingForm = () => {
           discount,
           discount_code,
         });
-        // dispatch(commonActions.setLoading(false));
+        dispatch(commonActions.setLoading(false));
         window.location.href = url;
       } else {
         await payWithCreditCard({
@@ -76,14 +76,17 @@ const ShippingForm = () => {
         });
         dispatch(cartActions.resetCartLength());
         dispatch(checkoutActions.clearInfo());
+        dispatch(commonActions.setLoading(false));
+
         navigate("/checkout/order-complete", {
           replace: true,
         });
       }
     } catch (error) {
-      // dispatch(commonActions.setLoading(false));
+      dispatch(commonActions.setLoading(false));
 
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };

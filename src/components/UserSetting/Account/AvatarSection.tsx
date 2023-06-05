@@ -32,7 +32,8 @@ const AvatarSection = () => {
       dispatch(commonActions.setUploadImgLoading(false));
     } catch (error) {
       dispatch(commonActions.setUploadImgLoading(false));
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };
@@ -62,7 +63,8 @@ const AvatarSection = () => {
       await uploadImage(url);
     } catch (error) {
       dispatch(commonActions.setUploadImgLoading(false));
-      const err = ((error as AxiosError).response?.data as { msg: string }).msg;
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
       toast.error(err);
     }
   };
