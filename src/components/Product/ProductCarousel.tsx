@@ -16,6 +16,7 @@ import { commonActions } from "../../store/slice/Common.slice";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks";
 import Lottie from "../Common/Lottie";
+import LoadingSpinner from "../Common/LoadingSpinner ";
 const ProductCarousel = () => {
   const dispatch = useDispatch();
   const { isLoading } = useAppSelector((state) => state.common);
@@ -47,9 +48,13 @@ const ProductCarousel = () => {
   }, []);
 
   return (
-    <>
+    <CarouselContainer>
+      <h2>Best Seller</h2>
+
       {isLoading ? (
-        <Lottie jsonName="loading" />
+        <LoadingContainer>
+          <LoadingSpinner size={100} />
+        </LoadingContainer>
       ) : (
         <>
           <Swiper
@@ -93,7 +98,7 @@ const ProductCarousel = () => {
           </SliderBtnContainer>
         </>
       )}
-    </>
+    </CarouselContainer>
   );
 };
 
@@ -102,5 +107,15 @@ const SliderBtnContainer = styled.div`
   display: flex;
   justify-content: center;
   padding-top: 2rem;
+`;
+const CarouselContainer = styled.div`
+  width: 100%;
+`;
+const LoadingContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
 `;
 export default ProductCarousel;

@@ -6,16 +6,18 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const Spinner = styled.div`
+const Spinner = styled.div<{ size?: number }>`
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: ${(props) => (props.size ? props.size : 20)}px;
+  height: ${(props) => (props.size ? props.size : 20)}px;
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3498db;
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
 `;
-
-const LoadingSpinner = () => <Spinner />;
+interface IProps {
+  size?: number;
+}
+const LoadingSpinner = (props: IProps) => <Spinner size={props.size} />;
 
 export default LoadingSpinner;
