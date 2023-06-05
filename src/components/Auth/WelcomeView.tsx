@@ -19,6 +19,7 @@ import { useUpdateEffect } from "../../hooks/useUpdateEffect";
 import { githubLoginApi } from "../../api/auth.api";
 import Lottie from "../Common/Lottie";
 import BackdropLoading from "../Common/BackdropLoading";
+import { commonActions } from "../../store/slice/Common.slice";
 
 const WelcomeView = () => {
   const { isLoading } = useAppSelector((state) => state.common);
@@ -38,7 +39,10 @@ const WelcomeView = () => {
     },
   });
   const loginWithGithub = async () => {
+    dispatch(commonActions.setLoading(true));
     const { data } = await githubLoginApi();
+    dispatch(commonActions.setLoading(false));
+
     window.location.href = data;
   };
   useEffect(() => {
