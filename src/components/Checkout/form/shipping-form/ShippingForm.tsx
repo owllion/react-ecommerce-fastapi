@@ -18,6 +18,8 @@ import { commonActions } from "../../../../store/slice/Common.slice";
 import { cartActions } from "../../../../store/slice/Cart.slice";
 import { checkoutActions } from "../../../../store/slice/Checkout.slice";
 import linepay from "src/assets/order/linepay_png.png";
+import BackdropLoading from "../../../Common/BackdropLoading";
+import { setTimeout } from "timers/promises";
 
 interface FormValue {
   first_name: string;
@@ -34,6 +36,7 @@ const ShippingForm = () => {
   const { total, shipping, discount_total, discount, discount_code } =
     useAppSelector((state) => state.checkout);
   const { locale, id } = useAppSelector((state) => state.user || {});
+  const { checkoutLoading } = useAppSelector((state) => state.common);
   const [userLocale, setUserLocale] = useState("");
   const [curBtnName, setCurBtnName] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string | undefined>(
@@ -43,7 +46,7 @@ const ShippingForm = () => {
   const haveUsedCoupon = () => discount !== 0;
   const createOrderHandler = async (info: FormValue, type: string) => {
     try {
-      dispatch(commonActions.setLoading(true));
+      dispatch(commonActions.setCheckoutLoading(true));
       if (type === "linepay") {
         const {
           data: { url },
@@ -59,7 +62,7 @@ const ShippingForm = () => {
           discount,
           discount_code,
         });
-        dispatch(commonActions.setLoading(false));
+        dispatch(commonActions.setCheckoutLoading(false));
         window.location.href = url;
       } else {
         await payWithCreditCard({
@@ -76,7 +79,7 @@ const ShippingForm = () => {
         });
         dispatch(cartActions.resetCartLength());
         dispatch(checkoutActions.clearInfo());
-        dispatch(commonActions.setLoading(false));
+        dispatch(commonActions.setCheckoutLoading(false));
 
         navigate("/checkout/order-complete", {
           replace: true,
@@ -106,10 +109,8 @@ const ShippingForm = () => {
     handleSubmit,
     formState: { errors },
   } = methods;
-  const onSubmit: SubmitHandler<FormValue> = async (data, event) => {
-    const formElement = event?.target as HTMLFormElement;
-    // const btnName = formElement.getElementsByTagName("button")[1].name;
-    console.log(curBtnName, "當前名稱");
+
+  const onSubmit: SubmitHandler<FormValue> = async (data) => {
     await createOrderHandler(data, curBtnName);
     console.log(errors);
   };
@@ -128,100 +129,113 @@ const ShippingForm = () => {
   }, [locale]);
 
   return (
-    <SC.ShippingContainer>
-      <FormProvider {...methods}>
-        <SectionTitle>SHIPPING ADDRESS</SectionTitle>
-        <SC.FormContainer onSubmit={handleSubmit(onSubmit)}>
-          <SC.RowFlexBox>
-            <SC.LeftInputBox>
-              <SC.Label error={errors.first_name}>First Name</SC.Label>
-              <SC.Input
-                error={errors.first_name}
-                {...register(
-                  "first_name",
-                  getValidationData(["maxLength", "required", "alphabetical"])
-                )}
-              />
-              <FieldErr errors={errors} field="first_name" />
-            </SC.LeftInputBox>
+    <>
+      {checkoutLoading ? (
+        <BackdropLoading />
+      ) : (
+        <SC.ShippingContainer>
+          <FormProvider {...methods}>
+            <SectionTitle>SHIPPING ADDRESS</SectionTitle>
+            <SC.FormContainer onSubmit={handleSubmit(onSubmit)}>
+              <SC.RowFlexBox>
+                <SC.LeftInputBox>
+                  <SC.Label error={errors.first_name}>First Name</SC.Label>
+                  <SC.Input
+                    error={errors.first_name}
+                    {...register(
+                      "first_name",
+                      getValidationData([
+                        "maxLength",
+                        "required",
+                        "alphabetical",
+                      ])
+                    )}
+                  />
+                  <FieldErr errors={errors} field="first_name" />
+                </SC.LeftInputBox>
 
-            <SC.RightInputBox>
-              <SC.Label error={errors.last_name}>Last Name</SC.Label>
-              <SC.Input
-                error={errors.last_name}
-                {...register(
-                  "last_name",
-                  getValidationData(["required", "alphabetical"])
-                )}
-              />
-              <FieldErr errors={errors} field="last_name" />
-            </SC.RightInputBox>
-          </SC.RowFlexBox>
-          <SC.SingleInputBox>
-            <SC.Label>Country</SC.Label>
-            <Select
-              fullWidth={true}
-              needScroll={true}
-              listData={countries}
-              handleSetSelected={handleSetCountry}
-              handleActive={handleActive}
-              selectedName={selectedCountry!}
-              active={active}
-            />
-          </SC.SingleInputBox>
-          <SC.SingleInputBox>
-            <SC.Label>Address</SC.Label>
-            <SC.Input
-              error={errors.address}
-              {...register("address", getValidationData(["required"]))}
-            />
-            <FieldErr errors={errors} field="address" />
-          </SC.SingleInputBox>
-          <SC.RowFlexBox>
-            <SC.LeftInputBox>
-              <SC.Label error={errors.state}>State/County</SC.Label>
-              <SC.Input
-                error={errors.state}
-                {...register(
-                  "state",
-                  getValidationData(["required", "alphabetical"])
-                )}
-              />
-              <FieldErr errors={errors} field="state" />
-            </SC.LeftInputBox>
-            <SC.RightInputBox>
-              <SC.Label error={errors.zip}>Zip code</SC.Label>
-              <SC.Input
-                maxLength={8}
-                error={errors.zip}
-                {...register("zip", getValidationData(["required", "numeric"]))}
-              />
-              <FieldErr errors={errors} field="zip" />
-            </SC.RightInputBox>
-          </SC.RowFlexBox>
-          <SectionTitle>Payment Info</SectionTitle>
-          <PaymentForm />
-          <PayBtn
-            name="card"
-            onClick={() => {
-              setCurBtnName("card");
-            }}
-          >
-            Pay with credit card
-          </PayBtn>
-          {!haveUsedCoupon() && (
-            <SC.LinePayBtn
-              name="linepay"
-              onClick={() => {
-                setCurBtnName("linepay");
-              }}
-            >
-              <LinePayImg src={linepay} />
-            </SC.LinePayBtn>
-          )}
-        </SC.FormContainer>
-      </FormProvider>
-    </SC.ShippingContainer>
+                <SC.RightInputBox>
+                  <SC.Label error={errors.last_name}>Last Name</SC.Label>
+                  <SC.Input
+                    error={errors.last_name}
+                    {...register(
+                      "last_name",
+                      getValidationData(["required", "alphabetical"])
+                    )}
+                  />
+                  <FieldErr errors={errors} field="last_name" />
+                </SC.RightInputBox>
+              </SC.RowFlexBox>
+              <SC.SingleInputBox>
+                <SC.Label>Country</SC.Label>
+                <Select
+                  fullWidth={true}
+                  needScroll={true}
+                  listData={countries}
+                  handleSetSelected={handleSetCountry}
+                  handleActive={handleActive}
+                  selectedName={selectedCountry!}
+                  active={active}
+                />
+              </SC.SingleInputBox>
+              <SC.SingleInputBox>
+                <SC.Label>Address</SC.Label>
+                <SC.Input
+                  error={errors.address}
+                  {...register("address", getValidationData(["required"]))}
+                />
+                <FieldErr errors={errors} field="address" />
+              </SC.SingleInputBox>
+              <SC.RowFlexBox>
+                <SC.LeftInputBox>
+                  <SC.Label error={errors.state}>State/County</SC.Label>
+                  <SC.Input
+                    error={errors.state}
+                    {...register(
+                      "state",
+                      getValidationData(["required", "alphabetical"])
+                    )}
+                  />
+                  <FieldErr errors={errors} field="state" />
+                </SC.LeftInputBox>
+                <SC.RightInputBox>
+                  <SC.Label error={errors.zip}>Zip code</SC.Label>
+                  <SC.Input
+                    maxLength={8}
+                    error={errors.zip}
+                    {...register(
+                      "zip",
+                      getValidationData(["required", "numeric"])
+                    )}
+                  />
+                  <FieldErr errors={errors} field="zip" />
+                </SC.RightInputBox>
+              </SC.RowFlexBox>
+              <SectionTitle>Payment Info</SectionTitle>
+              <PaymentForm />
+              <PayBtn
+                name="card"
+                onClick={() => {
+                  setCurBtnName("card");
+                }}
+              >
+                Pay with credit card
+              </PayBtn>
+              {!haveUsedCoupon() && (
+                <SC.LinePayBtn
+                  name="linepay"
+                  onClick={() => {
+                    setCurBtnName("linepay");
+                  }}
+                >
+                  <LinePayImg src={linepay} />
+                </SC.LinePayBtn>
+              )}
+            </SC.FormContainer>
+          </FormProvider>
+        </SC.ShippingContainer>
+      )}
+    </>
   );
 };
 

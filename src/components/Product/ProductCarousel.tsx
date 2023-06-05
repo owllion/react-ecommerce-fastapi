@@ -12,8 +12,13 @@ import SliderBtn from "./SliderBtn";
 import SingleProduct from "./SingleProduct";
 import { getBestSellerApi } from "../../api/product.api";
 import { IProduct } from "../../interface/product.interface";
-
+import { commonActions } from "../../store/slice/Common.slice";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../store/hooks";
+import Lottie from "../Common/Lottie";
 const ProductCarousel = () => {
+  const dispatch = useDispatch();
+  const { isLoading } = useAppSelector((state) => state.common);
   const [bestSellerList, setBestSellerList] = useState<IProduct[]>([]);
 
   const swiperRef = useRef<{ slidePrev: () => void; slideNext: () => void }>();
@@ -25,11 +30,13 @@ const ProductCarousel = () => {
   };
 
   const getBestSeller = async () => {
+    dispatch(commonActions.setLoading(true));
     try {
       const { data } = await getBestSellerApi();
-      console.log(data, "這赤data");
       setBestSellerList(data);
+      dispatch(commonActions.setLoading(false));
     } catch (error) {
+      dispatch(commonActions.setLoading(false));
       const err = error as AxiosError;
       const msg = (err.response?.data as { detail: string }).detail;
       toast.error(msg);
@@ -41,45 +48,51 @@ const ProductCarousel = () => {
 
   return (
     <>
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={10}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        breakpoints={{
-          "@0.00": {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-          "@0.75": {
-            slidesPerView: 2,
-            spaceBetween: 20,
-          },
-          "@1.00": {
-            slidesPerView: 3,
-            spaceBetween: 40,
-          },
-          "@1.50": {
-            slidesPerView: 6,
-            spaceBetween: 50,
-          },
-        }}
-        modules={[Lazy, Navigation]}
-        className="mySwiper"
-        lazy={true}
-        navigation={true}
-      >
-        {bestSellerList.map((item) => (
-          <SwiperSlide key={item.id}>
-            <SingleProduct item={item} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <SliderBtnContainer>
-        <SliderBtn type="prev" clickHandler={toPrev} />
-        <SliderBtn type="next" clickHandler={toNext} />
-      </SliderBtnContainer>
+      {isLoading ? (
+        <Lottie jsonName="loading" />
+      ) : (
+        <>
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={10}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            breakpoints={{
+              "@0.00": {
+                slidesPerView: 1,
+                spaceBetween: 10,
+              },
+              "@0.75": {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              "@1.00": {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+              "@1.50": {
+                slidesPerView: 6,
+                spaceBetween: 50,
+              },
+            }}
+            modules={[Lazy, Navigation]}
+            className="mySwiper"
+            lazy={true}
+            navigation={true}
+          >
+            {bestSellerList.map((item) => (
+              <SwiperSlide key={item.id}>
+                <SingleProduct item={item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <SliderBtnContainer>
+            <SliderBtn type="prev" clickHandler={toPrev} />
+            <SliderBtn type="next" clickHandler={toNext} />
+          </SliderBtnContainer>
+        </>
+      )}
     </>
   );
 };

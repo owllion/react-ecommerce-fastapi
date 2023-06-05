@@ -18,7 +18,7 @@ import { commonActions } from "../../store/slice/Common.slice";
 import { checkoutActions } from "../../store/slice/Checkout.slice";
 import OrderDetailSummary from "../UserSetting/OrderDetailSummary";
 import { RiErrorWarningFill } from "react-icons/ri";
-
+import LoadingSpinner from "../Common/LoadingSpinner ";
 const CheckoutItemList = () => {
   const dispatch = useAppDispatch();
   const [code, setCode] = useState("");
@@ -119,7 +119,7 @@ const CheckoutItemList = () => {
           disabled={applyCouponLoading || !code}
           onClick={() => applyCouponHandler()}
         >
-          APPLY
+          {applyCouponLoading ? <LoadingSpinner /> : "Apply"}
         </ApplyBtn>
       </PromoCodeContainer>
       <ApiErrorBox>

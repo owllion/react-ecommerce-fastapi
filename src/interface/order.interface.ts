@@ -51,6 +51,7 @@ export interface IOrder {
 
 export interface IOrderInList {
   total: number;
+  discount_total: number;
   created_at: Date;
   id: string;
   order_status: number;

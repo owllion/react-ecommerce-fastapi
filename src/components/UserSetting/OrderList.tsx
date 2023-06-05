@@ -13,11 +13,6 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { commonActions } from "../../store/slice/Common.slice";
 import NoResult from "./NoResult";
 import { getOrderListApi } from "../../api/user.api";
-interface IOrderList {
-  data: {
-    orderList: IOrder[];
-  };
-}
 
 const OrderList = () => {
   const dispatch = useAppDispatch();
@@ -73,7 +68,9 @@ const OrderList = () => {
                       </Link>
                     </ID>
 
-                    <Total>${item.total}</Total>
+                    <Total>
+                      ${item.discount_total ? item.discount_total : item.total}
+                    </Total>
                     <Status>
                       <Chip>
                         {item.order_status === 0 ? "completed" : "canceled"}

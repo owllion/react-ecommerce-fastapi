@@ -9,7 +9,6 @@ import { IUserInfo } from "src/interface/user.interface";
 import { authRelatedAction } from "./authRelatedAction.action";
 import { IAuthResult } from "./signInOrSignUp.action";
 
-// export const googleLogin = (code: string): AppThunk => {
 export const googleLogin = (access_token: string): AppThunk => {
   return async (dispatch) => {
     dispatch(commonActions.setLoading(true));
@@ -31,12 +30,9 @@ export const googleLogin = (access_token: string): AppThunk => {
       );
 
       dispatch(commonActions.setLoading(false));
-      console.log("有成功嗎?");
 
       toast.success("You have signed in successfully!");
-      console.log("toase後面");
     } catch (error) {
-      console.log("進入catch sec");
       dispatch(commonActions.setLoading(false));
 
       const err = ((error as AxiosError).response?.data as { detail: string })

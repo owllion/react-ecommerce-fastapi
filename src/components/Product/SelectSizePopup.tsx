@@ -9,12 +9,15 @@ import SizeSelect from "./SizeSelect";
 import { commonActions } from "../../store/slice/Common.slice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import addToCart from "../../store/actions/product/addToCart.action";
-
+import Lottie from "../Common/Lottie";
+import LoadingSpinner from "../Common/LoadingSpinner ";
 const sizeList = ["XS", "S", "M", "L", "XL"];
 
 const Popup = () => {
   const dispatch = useAppDispatch();
-  const { currentProductId } = useAppSelector((state) => state.common || {});
+  const { currentProductId, addToCartLoading } = useAppSelector(
+    (state) => state.common || {}
+  );
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
 
   const setSizeHandler = (index: number) => {
@@ -50,7 +53,9 @@ const Popup = () => {
             setSizeHandler={setSizeHandler}
             selectedSizeIndex={selectedSizeIndex}
           />
-          <CheckBtn onClick={() => handleAddToCart()}>Add To Cart</CheckBtn>
+          <CheckBtn onClick={() => handleAddToCart()}>
+            {addToCartLoading ? <LoadingSpinner /> : "Add To Cart"}
+          </CheckBtn>
         </Wrapper>
       </Container>
     </>

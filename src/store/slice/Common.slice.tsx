@@ -6,8 +6,10 @@ interface IState {
   favLoading: boolean;
   cartLoading: boolean;
   applyCouponLoading: boolean;
+  addToCartLoading: boolean;
   modifyReviewLoading: boolean;
   uploadImgLoading: boolean;
+  checkoutLoading: boolean;
   showSearch: boolean;
   showPopup: boolean;
   itemQty: number;
@@ -21,7 +23,9 @@ const initialState: IState = {
   errorMsg: "",
   isLoading: false,
   favLoading: false,
+  checkoutLoading: false,
   cartLoading: false,
+  addToCartLoading: false,
   applyCouponLoading: false,
   modifyReviewLoading: false,
   uploadImgLoading: false,
@@ -44,11 +48,18 @@ const commonSlice = createSlice({
     setLoading(state, { payload }: PayloadAction<boolean>) {
       state.isLoading = payload;
     },
+    setCheckoutLoading(state, { payload }: PayloadAction<boolean>) {
+      state.checkoutLoading = payload;
+    },
+
     setFavLoading(state, { payload }: PayloadAction<boolean>) {
       state.favLoading = payload;
     },
     setCartLoading(state, { payload }: PayloadAction<boolean>) {
       state.cartLoading = payload;
+    },
+    setAddToCartLoading(state, { payload }: PayloadAction<boolean>) {
+      state.addToCartLoading = payload;
     },
     setApplyCouponLoading(state, { payload }: PayloadAction<boolean>) {
       state.applyCouponLoading = payload;
@@ -59,6 +70,7 @@ const commonSlice = createSlice({
     setUploadImgLoading(state, { payload }: PayloadAction<boolean>) {
       state.uploadImgLoading = payload;
     },
+
     setShowSearch(state, { payload }: PayloadAction<boolean>) {
       state.showSearch = payload;
     },

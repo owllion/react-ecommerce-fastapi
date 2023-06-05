@@ -3,14 +3,14 @@ import { AnyAction } from "@reduxjs/toolkit";
 
 import addToCart from "../../store/actions/product/addToCart.action";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-
+import LoadingSpinner from "../Common/LoadingSpinner ";
 interface IProps {
   id: string;
   size: string;
 }
 const AddToCartBtn = ({ id, size }: IProps) => {
   const dispatch = useAppDispatch();
-  const { cartLoading } = useAppSelector((state) => state.common || {});
+  const { addToCartLoading } = useAppSelector((state) => state.common || {});
   const handleAddToCart = async () => {
     try {
       /**
@@ -24,8 +24,8 @@ const AddToCartBtn = ({ id, size }: IProps) => {
     }
   };
   return (
-    <Container disabled={cartLoading} onClick={() => handleAddToCart()}>
-      Add To Cart
+    <Container disabled={addToCartLoading} onClick={() => handleAddToCart()}>
+      {addToCartLoading ? <LoadingSpinner /> : "Add To Cart"}
     </Container>
   );
 };

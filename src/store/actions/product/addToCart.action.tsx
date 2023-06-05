@@ -22,7 +22,7 @@ const addToCart = ({ id, addOne, size }: IProps): AppThunk => {
     const qty = addOne ? 1 : itemQty;
 
     try {
-      dispatch(commonActions.setCartLoading(true));
+      dispatch(commonActions.setAddToCartLoading(true));
 
       await addToCartApi({ product_id: id, qty, size });
       dispatch(cartActions.setCartLength(qty));
@@ -31,9 +31,9 @@ const addToCart = ({ id, addOne, size }: IProps): AppThunk => {
 
       dispatch(commonActions.setShowPopup(false));
 
-      dispatch(commonActions.setCartLoading(false));
+      dispatch(commonActions.setAddToCartLoading(false));
     } catch (error) {
-      dispatch(commonActions.setCartLoading(false));
+      dispatch(commonActions.setAddToCartLoading(false));
 
       const err = ((error as AxiosError).response?.data as { detail: string })
         .detail;

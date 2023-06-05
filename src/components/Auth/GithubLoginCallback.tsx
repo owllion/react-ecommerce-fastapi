@@ -14,8 +14,9 @@ import { authRelatedAction } from "../../store/actions/auth/authRelatedAction.ac
 import { commonActions } from "../../store/slice/Common.slice";
 import { sendLink } from "src/api/auth.api";
 import VerifyState from "./verify/VerifyState";
-
+import Lottie from "../Common/Lottie";
 import { githubAuthApi } from "../../api/auth.api";
+import BackdropLoading from "../Common/BackdropLoading";
 const GithubLoginCallback = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -50,7 +51,7 @@ const GithubLoginCallback = () => {
     verifyToken();
   }, []);
 
-  return <div></div>;
+  return <BackdropLoading />;
 };
 
 export default GithubLoginCallback;
