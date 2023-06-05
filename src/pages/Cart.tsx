@@ -11,6 +11,8 @@ import { cartActions } from "../store/slice/Cart.slice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { commonActions } from "../store/slice/Common.slice";
 import Lottie from "../components/Common/Lottie";
+import LoadingSpinner from "../components/Common/LoadingSpinner ";
+import { LoadingContainer } from "../components/Product/ProductCarousel";
 
 type ICartItem = {
   product: {
@@ -31,6 +33,7 @@ const Cart = () => {
   const [total, setTotal] = useState(0);
   const dispatch = useAppDispatch();
   const { cartList } = useAppSelector((state) => state.cart);
+  const { isLoading } = useAppSelector((state) => state.common);
   const getTotal = () => {
     const res = cartList?.reduce(
       (total: any, cur: any) => total + cur.qty! * cur.product.price,
@@ -105,6 +108,11 @@ const Cart = () => {
           )}
           {cartList?.length === 0 && (
             <Lottie jsonName={"sleepingAnt"} text="Your cart is empty" />
+          )}
+          {isLoading && (
+            <LoadingContainer mt={8}>
+              <LoadingSpinner size={100} />
+            </LoadingContainer>
           )}
         </CartContent>
       </Wrapper>

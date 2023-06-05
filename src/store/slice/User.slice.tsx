@@ -31,7 +31,6 @@ const userSlice = createSlice({
       state.phone = payload.phone;
       state.upload_avatar = payload.upload_avatar;
       state.default_avatar = payload.default_avatar;
-      state.favorites = payload.favorites;
     },
     setGoogleLoginInfo(state, { payload }: PayloadAction<IUserInfo>) {
       const {
@@ -42,18 +41,14 @@ const userSlice = createSlice({
         last_name,
         default_avatar,
         upload_avatar,
-        favorites,
-        locale,
       } = payload;
       state.id = id;
-      state.first_name = payload.first_name;
-      state.last_name = payload.last_name;
+      state.first_name = first_name;
+      state.last_name = last_name;
       state.email = email;
       state.phone = phone;
       state.default_avatar = default_avatar;
       state.upload_avatar = upload_avatar;
-      state.favorites = favorites;
-      state.locale = locale;
     },
     setGithubLoginInfo(state, { payload }: PayloadAction<IUserInfo>) {
       state.id = payload.id;
@@ -62,8 +57,6 @@ const userSlice = createSlice({
       state.first_name = payload.first_name;
       state.last_name = payload.last_name;
       state.phone = payload.phone;
-      console.log(payload.favorites, "這是favss!");
-      // state.favorites = payload.favorites;
     },
     updateUserInfo(state, { payload }: PayloadAction<Partial<IUser>>) {
       state.phone = payload.phone;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import { FiHeart } from "react-icons/fi";
@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { IProduct } from "../../interface/product.interface";
 import { userActions } from "../../store/slice/User.slice";
 import { commonActions } from "../../store/slice/Common.slice";
-
+import LoadingSpinner from "../Common/LoadingSpinner ";
 const Heart = ({ item }: { item: IProduct | undefined }) => {
   const dispatch = useAppDispatch();
   const { favorites } = useAppSelector((state) => state.user || {});
@@ -22,6 +22,10 @@ const Heart = ({ item }: { item: IProduct | undefined }) => {
   const isInList = () => {
     return favorites?.find((fav) => fav?.id === item?.id);
   };
+  useEffect(() => {
+    isInList();
+  }, [favorites]);
+
   const toggleFav = async () => {
     if (!getToken()) return toast.error("You need to login");
     try {
@@ -44,15 +48,17 @@ const Heart = ({ item }: { item: IProduct | undefined }) => {
       toast.error(errMsg);
     }
   };
-
   return (
     <>
-      <Icon
-        // onClick={() => (isInList() ? removeFromFav() : addToFav())}
-        onClick={() => toggleFav()}
-        disabled={favLoading}
-      >
-        {isInList() ? <IoIosHeart /> : <FiHeart />}
+      {favLoading}
+      <Icon onClick={() => toggleFav()} disabled={favLoading}>
+        {favLoading ? (
+          <LoadingSpinner />
+        ) : isInList() ? (
+          <IoIosHeart />
+        ) : (
+          <FiHeart />
+        )}
       </Icon>
     </>
   );

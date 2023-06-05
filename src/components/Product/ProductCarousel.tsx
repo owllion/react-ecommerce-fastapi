@@ -111,11 +111,11 @@ const SliderBtnContainer = styled.div`
 const CarouselContainer = styled.div`
   width: 100%;
 `;
-const LoadingContainer = styled.div`
+export const LoadingContainer = styled.div<{ mt?: number }>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: ${(props) => (props.mt ? props.mt : 2)}rem;
 `;
 export default ProductCarousel;
