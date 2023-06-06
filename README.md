@@ -1,9 +1,5 @@
  # koh  -  MERN Stack Shopping App
 - A shopping app created with React.js , styled-components , TypeScript , Node.js , Typegoose and MongoDB.
-- This repository only contains the front-end part. Node.js server is  [here](https://github.com/owllion/EC-Server).
-- You can click this [link](https://react-mern-ecommerce.vercel.app/) to watch demo.
-
-
 
 ## Table of Contents
 * [Technologies](#technologies)
@@ -22,8 +18,6 @@
 - Framer Motion - v6.3.11
 - TypeScript - v4.7.4
 - styled-components - v5.3.5
-
-
 
 ## Features 
 - Log in / Log out 
