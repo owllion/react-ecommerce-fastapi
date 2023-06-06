@@ -109,7 +109,7 @@ const Registration = () => {
             validation={["required", "passwordValidation"]}
           />
           <PwdRule />
-          <AuthBtn btnText="Sign Up" needSwitchText={true} />
+          <AuthBtn btnText="Sign Up" />
         </AuthFormTemplate>
       </FormContainer>
     </FormProvider>

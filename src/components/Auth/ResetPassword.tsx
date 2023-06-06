@@ -13,9 +13,10 @@ import AuthBtn from "./AuthBtn";
 import PwdRule from "./pwdRule/PwdRule";
 import VerifyState from "./verify/VerifyState";
 import { sendLink } from "src/api/auth.api";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { commonActions } from "src/store/slice/Common.slice";
 import { authImgList } from "../../assets/authImg";
+import BackdropLoading from "../Common/BackdropLoading";
 interface FormValue {
   password?: string;
   email?: string;
@@ -24,6 +25,9 @@ interface FormValue {
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { isLoading, checkLinkTokenLoading } = useAppSelector(
+    (state) => state.common
+  );
   const [isVerified, setIsVerified] = useState(true);
   const params = useParams();
   const { token } = params as { token: string };
@@ -34,21 +38,27 @@ const ResetPassword = () => {
   } = methods;
 
   const onSubmit: SubmitHandler<FormValue> = async (data, event) => {
+    await handleRestPassword(data.password!);
     {
       /* 這邊取得id來做額外判斷是因為AuthBtn本身不只是用來做重設密碼而已，他還有被用來發email，所以要用id來判斷現在他是什麼用途才能執行相對應的正確邏輯 */
     }
-    const targetId = (event?.nativeEvent as { submitter: any }).submitter?.id;
-    targetId === "ResetPassword"
-      ? await handleRestPassword(data.password!)
-      : await handleSendResetLink(data.email!);
+    // const targetId = (event?.nativeEvent as { submitter: any }).submitter?.id;
+    // targetId === "ResetPassword"
+    //   ? await handleRestPassword(data.password!)
+    //   : await handleSendResetLink(data.email!);
   };
 
   const handleRestPassword = async (password: string) => {
     try {
+      dispatch(commonActions.setLoading(true));
       await resetPassword({ token, password });
+      dispatch(commonActions.setLoading(false));
+
       toast.success("Password reset successfully!");
       navigate("/auth/welcome");
     } catch (error) {
+      dispatch(commonActions.setLoading(false));
+
       const err = ((error as AxiosError).response?.data as { detail: string })
         .detail;
       toast.error(err);
@@ -57,57 +67,66 @@ const ResetPassword = () => {
     }
   };
 
-  const handleSendResetLink = async (email: string) => {
-    try {
-      await sendLink({ email, type: "reset" });
-      navigate("/auth/reset-password/notification", {
-        state: { email, type: "reset password" },
-        replace: true,
-      });
-    } catch (error) {
-      const err = ((error as AxiosError).response?.data as { detail: string })
-        .detail;
-      dispatch(commonActions.setError(err));
+  // const handleSendResetLink = async (email: string) => {
+  //   try {
+  //     await sendLink({ email, type: "reset" });
+  //     navigate("/auth/reset-password/notification", {
+  //       state: { email, type: "reset password" },
+  //       replace: true,
+  //     });
+  //   } catch (error) {
+  //     const err = ((error as AxiosError).response?.data as { detail: string })
+  //       .detail;
+  //     dispatch(commonActions.setError(err));
 
-      toast.error(err);
-    }
-  };
+  //     toast.error(err);
+  //   }
+  // };
   const handleCheckIfTokenIsValid = async () => {
     try {
+      dispatch(commonActions.setCheckLinkTokenLoading(true));
       await checkIfTokenIsValid({ token });
+      dispatch(commonActions.setCheckLinkTokenLoading(false));
+
       setIsVerified(true);
     } catch (error) {
+      dispatch(commonActions.setCheckLinkTokenLoading(false));
       setIsVerified(false);
     }
   };
   useEffect(() => {
     handleCheckIfTokenIsValid();
   }, []);
-
   return (
-    <FormProvider {...methods}>
-      <FormContainer onSubmit={handleSubmit(onSubmit)}>
-        {isVerified ? (
-          <AuthFormTemplate
-            mainTitle="Reset your password"
-            subTitle="Don't forget again"
-            imgUrl={authImgList.reset_pwd}
-            alt="resetImg"
-          >
-            <PwdInput
-              label="New Password"
-              errors={errors}
-              field="password"
-              validation={["required", "passwordValidation"]}
-            />
-            <PwdRule />
-            <AuthBtn btnText="Submit" id="ResetPassword" />
-          </AuthFormTemplate>
-        ) : (
-          <VerifyState isVerified={isVerified} />
-        )}
-      </FormContainer>
-    </FormProvider>
+    <>
+      {checkLinkTokenLoading ? (
+        <BackdropLoading />
+      ) : (
+        <FormProvider {...methods}>
+          <FormContainer onSubmit={handleSubmit(onSubmit)}>
+            {isVerified ? (
+              <AuthFormTemplate
+                mainTitle="Reset your password"
+                subTitle="Don't forget again"
+                imgUrl={authImgList.reset_pwd}
+                alt="resetImg"
+              >
+                <PwdInput
+                  label="New Password"
+                  errors={errors}
+                  field="password"
+                  validation={["required", "passwordValidation"]}
+                />
+                <PwdRule />
+                <AuthBtn btnText="Submit" id="ResetPassword" />
+              </AuthFormTemplate>
+            ) : (
+              <VerifyState isVerified={isVerified} />
+            )}
+          </FormContainer>
+        </FormProvider>
+      )}
+    </>
   );
 };
 

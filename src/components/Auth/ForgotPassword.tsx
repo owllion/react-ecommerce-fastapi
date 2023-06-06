@@ -11,11 +11,14 @@ import AuthBtn from "./AuthBtn";
 import FieldErr from "../error/FieldErr";
 import { forgotPassword } from "src/api/user.api";
 import { authImgList } from "../../assets/authImg.js";
+import { useAppDispatch } from "../../store/hooks";
+import { commonActions } from "../../store/slice/Common.slice";
 interface FormValue {
   email: string;
 }
 
 const ForgotPassword = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const methods = useForm<FormValue>();
   const {
@@ -26,11 +29,16 @@ const ForgotPassword = () => {
 
   const onSubmit: SubmitHandler<FormValue> = async (data) => {
     try {
+      dispatch(commonActions.setLoading(true));
       await forgotPassword({ ...data });
+      dispatch(commonActions.setLoading(false));
+
       navigate("/auth/reset-password/notification", {
         state: { email: data.email, type: "reset password" },
       });
     } catch (error) {
+      dispatch(commonActions.setLoading(false));
+
       console.log(error);
     }
   };

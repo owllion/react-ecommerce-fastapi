@@ -33,11 +33,12 @@ const CheckEmail = () => {
     formState: { errors },
   } = methods;
   const onSubmit: SubmitHandler<FormValue> = async (email) => {
+    dispatch(commonActions.setLoading(true));
     try {
       const {
         data: { has_account },
       } = await checkIfAccountExists(email);
-
+      dispatch(commonActions.setLoading(false));
       has_account
         ? navigate("/auth/user-login", {
             state: { email: email.email },
@@ -48,6 +49,7 @@ const CheckEmail = () => {
             replace: true,
           });
     } catch (error) {
+      dispatch(commonActions.setLoading(false));
       if (error && error instanceof AxiosError) {
         const err = ((error as AxiosError).response?.data as { detail: string })
           .detail;

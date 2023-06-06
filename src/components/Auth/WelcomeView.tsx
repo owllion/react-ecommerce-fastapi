@@ -20,8 +20,10 @@ import { githubLoginApi } from "../../api/auth.api";
 import Lottie from "../Common/Lottie";
 import BackdropLoading from "../Common/BackdropLoading";
 import { commonActions } from "../../store/slice/Common.slice";
+import LoadingSpinner from "../Common/LoadingSpinner ";
 
 const WelcomeView = () => {
+  const iss = false;
   const { isLoading } = useAppSelector((state) => state.common);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -45,45 +47,41 @@ const WelcomeView = () => {
 
     window.location.href = data;
   };
-  useEffect(() => {
-    // console.log(isLoading, "現在是true??");
-  }, [isLoading]);
+
   return (
     <>
-      {isLoading ? (
-        <BackdropLoading />
-      ) : (
-        <AuthFormTemplate
-          mainTitle="Welcome!"
-          subTitle="Sign Up or Sign In"
-          imgUrl={authImgList.welcome}
-          alt="welcomeImg"
-        >
-          <LoginBtnBox onClick={() => loginWithGoogle()}>
-            <LoginBtn shadow>
-              <FcGoogle />
-              <BtnText color={`${cl.textLightGray}`}>Login with Google</BtnText>
-            </LoginBtn>
-          </LoginBtnBox>
+      <AuthFormTemplate
+        mainTitle="Welcome!"
+        subTitle="Sign Up or Sign In"
+        imgUrl={authImgList.welcome}
+        alt="welcomeImg"
+      >
+        <LoginBtnBox onClick={() => loginWithGoogle()}>
+          <LoginBtn shadow>
+            <FcGoogle />
+            <BtnText color={`${cl.textLightGray}`}>Login with Google</BtnText>
+          </LoginBtn>
+        </LoginBtnBox>
 
-          <LoginBtnBox onClick={() => loginWithGithub()}>
-            <LoginBtn shadow>
-              <DiGithubBadge />
-              <BtnText color={`${cl.textLightGray}`}>Login with Github</BtnText>
-            </LoginBtn>
-          </LoginBtnBox>
+        <LoginBtnBox onClick={() => loginWithGithub()}>
+          <LoginBtn shadow>
+            <DiGithubBadge />
+            <BtnText color={`${cl.textLightGray}`}>
+              {isLoading ? <LoadingSpinner /> : "Login with Github"}
+            </BtnText>
+          </LoginBtn>
+        </LoginBtnBox>
 
-          <Divider>OR</Divider>
-          <LoginBtnBox>
-            <Link to={"/auth/check-email"}>
-              <LoginBtn bgColor="black">
-                <IoMdMail />
-                <BtnText>Login with Email</BtnText>
-              </LoginBtn>
-            </Link>
-          </LoginBtnBox>
-        </AuthFormTemplate>
-      )}
+        <Divider>OR</Divider>
+        <LoginBtnBox>
+          <Link to={"/auth/check-email"}>
+            <LoginBtn bgColor="black">
+              <IoMdMail />
+              <BtnText>Login with Email</BtnText>
+            </LoginBtn>
+          </Link>
+        </LoginBtnBox>
+      </AuthFormTemplate>
     </>
   );
 };

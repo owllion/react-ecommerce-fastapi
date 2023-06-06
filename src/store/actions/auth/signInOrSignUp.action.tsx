@@ -52,9 +52,9 @@ const signInOrSignUp = (data: IProps): AppThunk => {
       }
       dispatch(commonActions.setLoading(false));
     } catch (error) {
-      const err = error as AxiosError;
-
       dispatch(commonActions.setLoading(false));
+
+      const err = error as AxiosError;
 
       if (err.response && err.response.data) {
         const errMsg = (err.response?.data as { detail: string }).detail;
