@@ -29,8 +29,8 @@ import { authImgList } from "../../assets/authImg";
 export interface FormValue {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 const Registration = () => {
@@ -46,9 +46,9 @@ const Registration = () => {
     handleSubmit,
     formState: { errors },
   } = methods;
-  const onSubmit: SubmitHandler<FormValue> = (data) => {
+  const onSubmit: SubmitHandler<FormValue> = async (data) => {
     try {
-      dispatch(
+      await dispatch(
         signInOrSignUp({
           ...data,
           email: emailParam,
@@ -81,24 +81,24 @@ const Registration = () => {
           </InputBox>
           <RowFlexBox>
             <RegistrationLeftInputBox>
-              <Label error={errors.firstName}>First Name</Label>
+              <Label error={errors.first_name}>First Name</Label>
               <Input
-                error={errors.firstName}
+                error={errors.first_name}
                 {...register(
-                  "firstName",
+                  "first_name",
                   getValidationData(["required", "maxLength"])
                 )}
               />
-              <FieldErr errors={errors} field="firstName" />
+              <FieldErr errors={errors} field="first_name" />
             </RegistrationLeftInputBox>
 
             <RightInputBox>
-              <Label error={errors.lastName}>Last Name</Label>
+              <Label error={errors.last_name}>Last Name</Label>
               <Input
-                error={errors.lastName}
-                {...register("lastName", getValidationData(["required"]))}
+                error={errors.last_name}
+                {...register("last_name", getValidationData(["required"]))}
               />
-              <FieldErr errors={errors} field="lastName" />
+              <FieldErr errors={errors} field="last_name" />
             </RightInputBox>
           </RowFlexBox>
 

@@ -11,6 +11,7 @@ import NoResult from "src/components/UserSetting/NoResult";
 import { userActions } from "../../../store/slice/User.slice";
 import Review from "./Review";
 import { getReviewListApi } from "../../../api/user.api";
+import LoadingSpinner from "../../Common/LoadingSpinner ";
 
 const ReviewList = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,8 @@ const ReviewList = () => {
       {userReviews?.length === 0 && !isLoading && (
         <NoResult imgText={"NOTHING HERE"} showBtn={false} />
       )}
+
+      {isLoading && <LoadingSpinner size={100}></LoadingSpinner>}
     </Container>
   );
 };

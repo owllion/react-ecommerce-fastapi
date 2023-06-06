@@ -7,12 +7,12 @@ import { AxiosError } from "axios";
 
 import PwdInput from "../Common/input/PwdInput";
 import { resetPassword } from "../../api/user.api";
-import { checkIfTokenIsValid } from "../../api/auth.api";
+import { checkResetTokenApi } from "../../api/auth.api";
 import AuthFormTemplate from "./AuthFormTemplate";
 import AuthBtn from "./AuthBtn";
 import PwdRule from "./pwdRule/PwdRule";
 import VerifyState from "./verify/VerifyState";
-import { sendLink } from "src/api/auth.api";
+import { sendEmail } from "src/api/auth.api";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { commonActions } from "src/store/slice/Common.slice";
 import { authImgList } from "../../assets/authImg";
@@ -85,7 +85,7 @@ const ResetPassword = () => {
   const handleCheckIfTokenIsValid = async () => {
     try {
       dispatch(commonActions.setCheckLinkTokenLoading(true));
-      await checkIfTokenIsValid({ token });
+      await checkResetTokenApi({ token });
       dispatch(commonActions.setCheckLinkTokenLoading(false));
 
       setIsVerified(true);

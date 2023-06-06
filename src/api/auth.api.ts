@@ -25,17 +25,13 @@ export const checkIfAccountExists = (data: AuthInterface.ICheckAccount) =>
   instance.post("/auth/check-account", data);
 //ok
 export const getRefreshToken = (data: AuthInterface.IGetRefreshToken) =>
-  instance.post("/refresh-token", data);
+  instance.post("/auth/refresh-token", data);
 //ok
-export const verifyTokenApi = (data: AuthInterface.IVerifyToken) =>
-  instance.post("/auth/verify-token", data);
-//no
-export const sendLink = (data: AuthInterface.ISendVerifyLink) =>
-  instance.post("/auth/send-link", data);
-
+export const checkVerifyTokenApi = (data: AuthInterface.IVerifyToken) =>
+  instance.post("/auth/check-verify-token", data);
 //ok
-export const checkIfTokenIsValid = (data: AuthInterface.ICheckToken) =>
-  instance.post("/auth/check-token", data);
+export const sendEmail = (data: AuthInterface.ISendLink) =>
+  instance.post("/auth/send-email", data);
 
-//直接刪除localstorage即可
-// export const logoutApi = () => instance.get("/logout");
+export const checkResetTokenApi = (data: AuthInterface.ICheckToken) =>
+  instance.post("/auth/check-reset-token", data);

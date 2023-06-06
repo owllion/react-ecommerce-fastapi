@@ -23,7 +23,6 @@ import { commonActions } from "../../store/slice/Common.slice";
 import LoadingSpinner from "../Common/LoadingSpinner ";
 
 const WelcomeView = () => {
-  const iss = false;
   const { isLoading } = useAppSelector((state) => state.common);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

@@ -8,11 +8,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useAppDispatch } from "../../../store/hooks";
-import { verifyTokenApi } from "../../../api/auth.api";
+import { checkVerifyTokenApi } from "../../../api/auth.api";
 import { IAuthResult } from "../../../store/actions/auth/signInOrSignUp.action";
 import { authRelatedAction } from "../../../store/actions/auth/authRelatedAction.action";
 import { commonActions } from "../../../store/slice/Common.slice";
-import { sendLink } from "src/api/auth.api";
+import { sendEmail } from "src/api/auth.api";
 import VerifyState from "./VerifyState";
 
 const SendLinkNotification = () => {
@@ -35,7 +35,7 @@ const SendLinkNotification = () => {
 
   const handleSendVerifyLink = async (email: string) => {
     try {
-      await sendLink({ email, type: "verify" });
+      await sendEmail({ email });
       navigate("/auth/verify-email/notification", {
         state: { email, type: "verify email" },
         replace: true,
@@ -52,17 +52,17 @@ const SendLinkNotification = () => {
     try {
       dispatch(commonActions.setLoading(true));
       const {
-        data: { token: accessToken, refresh_token, user },
+        data: { token: access_token, refresh_token, user, cart_length },
       }: {
         data: IAuthResult;
-      } = await verifyTokenApi({ token });
+      } = await checkVerifyTokenApi({ token });
       setIsVerified(true);
       dispatch(
         authRelatedAction({
           user,
-          token: accessToken,
+          token: access_token,
           refreshToken: refresh_token,
-          cartLength: user.cartLength,
+          cartLength: cart_length,
           type: "email",
         }) as unknown as AnyAction
       );

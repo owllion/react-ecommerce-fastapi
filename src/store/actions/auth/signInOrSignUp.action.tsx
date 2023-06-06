@@ -21,6 +21,7 @@ const isLogin = (data: Record<string, string>) =>
 const signInOrSignUp = (data: IProps): AppThunk => {
   return async (dispatch) => {
     dispatch(commonActions.setLoading(true));
+
     try {
       const {
         data: { token, refresh_token, user, cart_length },

@@ -25,3 +25,4 @@ export interface ICheckToken extends IVerifyToken {}
 export interface ISendVerifyLink extends Pick<ILogin, "email"> {
   type: string;
 }
+export interface ISendLink extends Pick<ILogin, "email"> {}
