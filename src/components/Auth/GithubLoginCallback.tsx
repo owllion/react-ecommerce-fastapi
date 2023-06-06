@@ -1,20 +1,12 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useParams, useLocation } from "react-router-dom";
 import { AnyAction } from "@reduxjs/toolkit";
-import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 import { useAppDispatch } from "../../store/hooks";
-import { verifyTokenApi } from "../../api/auth.api";
 import { IAuthResult } from "../../store/actions/auth/signInOrSignUp.action";
 import { authRelatedAction } from "../../store/actions/auth/authRelatedAction.action";
 import { commonActions } from "../../store/slice/Common.slice";
-import { sendLink } from "src/api/auth.api";
-import VerifyState from "./verify/VerifyState";
-import Lottie from "../Common/Lottie";
+
 import { githubAuthApi } from "../../api/auth.api";
 import BackdropLoading from "../Common/BackdropLoading";
 const GithubLoginCallback = () => {

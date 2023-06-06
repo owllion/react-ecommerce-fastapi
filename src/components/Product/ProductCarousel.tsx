@@ -15,7 +15,6 @@ import { IProduct } from "../../interface/product.interface";
 import { commonActions } from "../../store/slice/Common.slice";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks";
-import Lottie from "../Common/Lottie";
 import LoadingSpinner from "../Common/LoadingSpinner ";
 const ProductCarousel = () => {
   const dispatch = useDispatch();

@@ -9,7 +9,6 @@ import SizeSelect from "./SizeSelect";
 import { commonActions } from "../../store/slice/Common.slice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import addToCart from "../../store/actions/product/addToCart.action";
-import Lottie from "../Common/Lottie";
 import LoadingSpinner from "../Common/LoadingSpinner ";
 const sizeList = ["XS", "S", "M", "L", "XL"];
 
