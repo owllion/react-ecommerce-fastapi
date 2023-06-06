@@ -23,6 +23,5 @@ export interface IVerifyToken {
 export interface IGetRefreshToken extends IVerifyToken {}
 export interface ICheckToken extends IVerifyToken {}
 export interface ISendVerifyLink extends Pick<ILogin, "email"> {
-  type: string;
+  token_type: string;
 }
-export interface ISendLink extends Pick<ILogin, "email"> {}

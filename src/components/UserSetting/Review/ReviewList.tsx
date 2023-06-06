@@ -12,6 +12,7 @@ import { userActions } from "../../../store/slice/User.slice";
 import Review from "./Review";
 import { getReviewListApi } from "../../../api/user.api";
 import LoadingSpinner from "../../Common/LoadingSpinner ";
+import { LoadingContainer } from "../../Product/ProductCarousel";
 
 const ReviewList = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +50,11 @@ const ReviewList = () => {
         <NoResult imgText={"NOTHING HERE"} showBtn={false} />
       )}
 
-      {isLoading && <LoadingSpinner size={100}></LoadingSpinner>}
+      {isLoading && (
+        <LoadingContainer needFullHeight={true}>
+          <LoadingSpinner size={100} />
+        </LoadingContainer>
+      )}
     </Container>
   );
 };

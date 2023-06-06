@@ -17,7 +17,9 @@ const VerifyStateTitle = ({ isVerified }: IProps) => {
               isVerified={isVerified}
               underline={isVerified ? SuccessUnderline : ErrorUnderline}
             />
-            {isVerified ? "Email has been verified !" : "Token has expired!"}
+            {isVerified
+              ? "Email has been verified !"
+              : "Token has expired or something wrong!"}
           </HasUnderline>
         </MainTitle>
       </MessageBox>

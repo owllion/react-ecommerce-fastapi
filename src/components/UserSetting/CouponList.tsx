@@ -2,7 +2,8 @@ import { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
-
+import LoadingSpinner from "../Common/LoadingSpinner ";
+import { LoadingContainer } from "../Product/ProductCarousel";
 import cl from "../../constants/color/color";
 import { ICoupon } from "../../interface/coupon.interface";
 import Coupon from "./Coupon";
@@ -101,8 +102,14 @@ const CouponList = () => {
           </Wrapper>
         </>
       )}
+
       {filteredList?.length === 0 && !isLoading && (
         <NoResult imgText={"NOTHING HERE"} showBtn={false} />
+      )}
+      {isLoading && (
+        <LoadingContainer needFullHeight={true}>
+          <LoadingSpinner size={100} />
+        </LoadingContainer>
       )}
     </Container>
   );

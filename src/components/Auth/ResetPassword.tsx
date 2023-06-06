@@ -38,14 +38,13 @@ const ResetPassword = () => {
   } = methods;
 
   const onSubmit: SubmitHandler<FormValue> = async (data, event) => {
-    await handleRestPassword(data.password!);
     {
       /* 這邊取得id來做額外判斷是因為AuthBtn本身不只是用來做重設密碼而已，他還有被用來發email，所以要用id來判斷現在他是什麼用途才能執行相對應的正確邏輯 */
     }
-    // const targetId = (event?.nativeEvent as { submitter: any }).submitter?.id;
-    // targetId === "ResetPassword"
-    //   ? await handleRestPassword(data.password!)
-    //   : await handleSendResetLink(data.email!);
+    const targetId = (event?.nativeEvent as { submitter: any }).submitter?.id;
+    targetId === "ResetPassword"
+      ? await handleRestPassword(data.password!)
+      : await handleSendResetLink(data.email!);
   };
 
   const handleRestPassword = async (password: string) => {
@@ -67,21 +66,26 @@ const ResetPassword = () => {
     }
   };
 
-  // const handleSendResetLink = async (email: string) => {
-  //   try {
-  //     await sendLink({ email, type: "reset" });
-  //     navigate("/auth/reset-password/notification", {
-  //       state: { email, type: "reset password" },
-  //       replace: true,
-  //     });
-  //   } catch (error) {
-  //     const err = ((error as AxiosError).response?.data as { detail: string })
-  //       .detail;
-  //     dispatch(commonActions.setError(err));
+  const handleSendResetLink = async (email: string) => {
+    try {
+      dispatch(commonActions.setLoading(true));
+      await sendEmail({ email, token_type: "reset_pwd" });
+      dispatch(commonActions.setLoading(false));
 
-  //     toast.error(err);
-  //   }
-  // };
+      navigate("/auth/reset-password/notification", {
+        state: { email, type: "reset password" },
+        replace: true,
+      });
+    } catch (error) {
+      dispatch(commonActions.setLoading(false));
+
+      const err = ((error as AxiosError).response?.data as { detail: string })
+        .detail;
+      dispatch(commonActions.setError(err));
+
+      toast.error(err);
+    }
+  };
   const handleCheckIfTokenIsValid = async () => {
     try {
       dispatch(commonActions.setCheckLinkTokenLoading(true));

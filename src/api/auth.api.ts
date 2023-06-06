@@ -30,7 +30,7 @@ export const getRefreshToken = (data: AuthInterface.IGetRefreshToken) =>
 export const checkVerifyTokenApi = (data: AuthInterface.IVerifyToken) =>
   instance.post("/auth/check-verify-token", data);
 //ok
-export const sendEmail = (data: AuthInterface.ISendLink) =>
+export const sendEmail = (data: AuthInterface.ISendVerifyLink) =>
   instance.post("/auth/send-email", data);
 
 export const checkResetTokenApi = (data: AuthInterface.ICheckToken) =>

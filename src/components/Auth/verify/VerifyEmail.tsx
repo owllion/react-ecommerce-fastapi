@@ -35,12 +35,18 @@ const SendLinkNotification = () => {
 
   const handleSendVerifyLink = async (email: string) => {
     try {
-      await sendEmail({ email });
+      dispatch(commonActions.setLoading(true));
+
+      await sendEmail({ email, token_type: "validate_email" });
+      dispatch(commonActions.setLoading(false));
+
       navigate("/auth/verify-email/notification", {
         state: { email, type: "verify email" },
         replace: true,
       });
     } catch (error) {
+      dispatch(commonActions.setLoading(false));
+
       const err = ((error as AxiosError).response?.data as { detail: string })
         .detail;
       dispatch(commonActions.setError(err));
