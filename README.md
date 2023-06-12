@@ -1,5 +1,5 @@
  # koh  -  MERN Stack Shopping App
-- A shopping app created with React.js , styled-components , TypeScript , Node.js , Typegoose and MongoDB.
+- A shopping app created with React.js , Redux , styled-components , TypeScript , FastAPI , MySQL , Redis and Docker.
 
 ## Table of Contents
 * [Technologies](#technologies)
