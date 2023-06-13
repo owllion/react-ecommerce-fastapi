@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IState {
   errorMsg: string;
   isLoading: boolean;
+  githubLoginLoading: boolean;
   favLoading: boolean;
   cartLoading: boolean;
   applyCouponLoading: boolean;
@@ -23,6 +24,7 @@ interface IItemQty {
 const initialState: IState = {
   errorMsg: "",
   isLoading: false,
+  githubLoginLoading: false,
   favLoading: false,
   checkoutLoading: false,
   cartLoading: false,
@@ -49,6 +51,9 @@ const commonSlice = createSlice({
     },
     setLoading(state, { payload }: PayloadAction<boolean>) {
       state.isLoading = payload;
+    },
+    setGithubLoginLoading(state, { payload }: PayloadAction<boolean>) {
+      state.githubLoginLoading = payload;
     },
     setCheckoutLoading(state, { payload }: PayloadAction<boolean>) {
       state.checkoutLoading = payload;

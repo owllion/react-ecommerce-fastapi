@@ -23,7 +23,9 @@ import { commonActions } from "../../store/slice/Common.slice";
 import LoadingSpinner from "../Common/LoadingSpinner ";
 
 const WelcomeView = () => {
-  const { isLoading } = useAppSelector((state) => state.common);
+  const { isLoading, githubLoginLoading } = useAppSelector(
+    (state) => state.common
+  );
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const googleLoginHandler = async (access_token: string) => {
@@ -40,9 +42,9 @@ const WelcomeView = () => {
     },
   });
   const loginWithGithub = async () => {
-    dispatch(commonActions.setLoading(true));
+    dispatch(commonActions.setGithubLoginLoading(true));
     const { data } = await githubLoginApi();
-    dispatch(commonActions.setLoading(false));
+    dispatch(commonActions.setGithubLoginLoading(false));
 
     window.location.href = data;
   };
@@ -66,7 +68,7 @@ const WelcomeView = () => {
           <LoginBtn shadow>
             <DiGithubBadge />
             <BtnText color={`${cl.textLightGray}`}>
-              {isLoading ? <LoadingSpinner /> : "Login with Github"}
+              {githubLoginLoading ? <LoadingSpinner /> : "Login with Github"}
             </BtnText>
           </LoginBtn>
         </LoginBtnBox>
