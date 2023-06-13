@@ -8,6 +8,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // @ts-ignore
 import store from "./store/store";
 import App from "./App";
+import { ThemeProvider } from "@zendeskgarden/react-theming";
 
 let persistor = persistStore(store);
 
@@ -16,10 +17,12 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-        <App />
-      </GoogleOAuthProvider>
-    </PersistGate>
+    <ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
+          <App />
+        </GoogleOAuthProvider>
+      </PersistGate>
+    </ThemeProvider>
   </Provider>
 );

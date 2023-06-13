@@ -46,7 +46,6 @@ const getProductList = (keyword: string): AppThunk => {
       };
 
       dispatch(commonActions.setLoading(true));
-      console.log(getState().common.isLoading, "這是sloading，應該要是true");
 
       const {
         data: { list, total },
@@ -66,7 +65,6 @@ const getProductList = (keyword: string): AppThunk => {
 
       dispatch(productActions.setProductList(list as IProduct[]));
       dispatch(commonActions.setLoading(false));
-      console.log(getState().common.isLoading, "這是sloading，應該要是false");
     } catch (error) {
       const err = error as AxiosError;
       dispatch(commonActions.setLoading(false));

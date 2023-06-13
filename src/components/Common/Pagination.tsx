@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import "src/styles/pagination.css";
-
+import { useAppSelector } from "../../store/hooks";
 interface IProps {
   itemsPerPage: number;
   itemsLength: number;
@@ -9,10 +9,12 @@ interface IProps {
 }
 const Pagination = ({ itemsPerPage, itemsLength, handlePageClick }: IProps) => {
   const [pageCount, setPageCount] = useState(0);
+  const { totalNum } = useAppSelector((state) => state.product);
 
   useEffect(() => {
-    setPageCount(Math.ceil(itemsLength / itemsPerPage));
-  }, [itemsLength]);
+    console.log(pageCount, "pageCount啥的");
+    setPageCount(Math.ceil(totalNum / itemsPerPage));
+  }, [totalNum]);
 
   return (
     <>

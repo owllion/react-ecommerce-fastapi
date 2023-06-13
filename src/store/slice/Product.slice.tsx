@@ -23,7 +23,7 @@ const initialState = {
   selectedBrand: [],
   selectedPrice: "",
   selectedSort: "",
-  curPage: 1,
+  curPage: 0,
   isTargetWidth: false,
   totalNum: 0,
 } as ProductState;
@@ -69,16 +69,10 @@ const productSlice = createSlice({
       state.productList = payload;
     },
     resetProductList(state) {
+      console.log("清空");
       state.productList = [];
     },
     filterProductList(state, { payload }: PayloadAction<string | undefined>) {
-      console.log(payload, "收到的字串");
-      console.log(
-        state.productList.filter((item) =>
-          payload ? item.product_name?.toLowerCase().includes(payload) : item
-        ),
-        "這是filter節果"
-      );
       state.productList = [...state.productList].filter((item) =>
         payload ? item.product_name?.toLowerCase().includes(payload) : item
       );

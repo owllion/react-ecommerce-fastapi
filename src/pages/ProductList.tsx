@@ -11,7 +11,7 @@ import { sortOptions } from "../data/sortOptions";
 import SingleProduct from "../components/Product/SingleProduct";
 import Select from "../components/Product/Select";
 import Filter from "../components/Product/Filter";
-import Pagination from "../components/Common/Pagination";
+// import Pagination from "../components/Common/Pagination";
 import Lottie from "../components/Common/Lottie";
 
 import { useAppSelector, useAppDispatch } from "../store/hooks";
@@ -21,11 +21,13 @@ import getProductList from "../store/actions/product/getProductList.action";
 import { useUpdateEffect } from "../hooks/useUpdateEffect";
 import { useMatchMedia } from "../hooks/useMatchMedia";
 import { useDebounce } from "../hooks/useDebounce";
+import { Pagination } from "@zendeskgarden/react-pagination";
 
 import { IProduct } from "../interface/product.interface";
 import SearchBar from "../components/Product/SearchBar";
 
 const ProductList = () => {
+  console.log("這是productList page最頂，測試reset時是否會跑到這");
   const {
     totalNum,
     productList,
@@ -36,7 +38,7 @@ const ProductList = () => {
   } = useAppSelector((state) => state.product || {});
 
   const { isLoading } = useAppSelector((state) => state.common || {});
-
+  const { curPage } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
 
   const location = useLocation();
@@ -46,7 +48,7 @@ const ProductList = () => {
     useState<(IProduct | Partial<IProduct>)[]>();
   const [filteredTotalNum, setFilteredTotalNum] = useState(0);
   const [keyword, setKeyword] = useState("");
-
+  const [curPaginationPage, setCurPaginationPage] = useState(1);
   const [activeSort, setActiveSort] = useState(false);
   const [activeFilter, setActiveFilter] = useState(false);
   const [sortBy, setSortBy] = useState("");
@@ -71,8 +73,9 @@ const ProductList = () => {
     handleActiveSort();
   };
 
-  const handlePageClick = (event: { selected: number }) => {
-    dispatch(productActions.setCurPage(event.selected + 1));
+  const handlePageClick = (curPage: number) => {
+    setCurPaginationPage(curPage);
+    dispatch(productActions.setCurPage(curPage));
     dispatch(getProductList(keyword) as unknown as AnyAction);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -81,6 +84,7 @@ const ProductList = () => {
 
   useUpdateEffect(() => {
     dispatch(productActions.setCurPage(1));
+    setCurPaginationPage(1);
 
     dispatch(getProductList(keyword) as unknown as AnyAction);
   }, [selectedSort, isTargetWidth]);
@@ -91,18 +95,16 @@ const ProductList = () => {
 
     setFilteredList(productList);
   }, [productList]);
-  useEffect(() => {
-    console.log("filteredList length:", filteredList?.length);
-    console.log(isLoading, "這是isLoading");
-  }, [filteredList]);
-  useEffect(() => {
-    setFilteredTotalNum(totalNum);
-  }, [totalNum]);
+
+  // useEffect(() => {
+  //   setFilteredTotalNum(totalNum);
+  // }, [totalNum]);
 
   useEffect(() => {
     const getData = async () => {
       dispatch(productActions.clearAllState());
       dispatch(productActions.setCurPage(1));
+      setCurPaginationPage(1);
       dispatch(productActions.setIsTargetWidth(isTargetWidth));
 
       category && dispatch(productActions.setCategory(category));
@@ -113,6 +115,8 @@ const ProductList = () => {
 
   useUpdateEffect(() => {
     dispatch(productActions.setCurPage(1));
+    setCurPaginationPage(1);
+
     dispatch(getProductList(keyword) as unknown as AnyAction);
   }, [selectedCategory, selectedBrand, selectedPrice]);
 
@@ -154,9 +158,11 @@ const ProductList = () => {
               </ItemContainer>
 
               <Pagination
-                itemsPerPage={12}
-                itemsLength={filteredTotalNum}
-                handlePageClick={handlePageClick}
+                totalPages={Math.ceil(totalNum / 12)}
+                currentPage={curPaginationPage}
+                onChange={(currentPage) => {
+                  handlePageClick(currentPage);
+                }}
               />
             </>
           )}
