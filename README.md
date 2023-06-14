@@ -1,4 +1,4 @@
- # koh  -  MERN Stack Shopping App
+ # koh - Shopping App
 - A shopping app created using React.js, Redux, styled-components, and TypeScript. 
 - Please note that this repository only contains the frontend part of the application.The backend repository for this shopping app can be found [here](https://github.com/owllion/fa_ecommerce).
 
